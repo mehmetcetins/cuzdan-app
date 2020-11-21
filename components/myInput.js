@@ -15,6 +15,7 @@ export default class MyInput extends React.Component{
     addItem(metin){
         this.data.push(<Text key={this.data.length-1}>{metin}</Text>);
         this.setState({items: <View>{this.data}</View>})
+
     };
 
     show(){

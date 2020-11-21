@@ -13,10 +13,11 @@ export default class MyScreen extends React.Component{
         items: [],
     }
     render(){
-        console.log("ekran");
+        const {addItem} = this.props
+
         return(
-            <View style={style.container} addItem={(data)=>{console.log(data);this.setState({items:data})}}>
-                <ScrollView>{this.state.items}</ScrollView>
+            <View style={style.container} >
+                <ScrollView>{addItem}</ScrollView>
             </View>
         )
     }
