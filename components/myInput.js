@@ -2,7 +2,7 @@ import React from "react";
 import {
     StyleSheet,TextInput,View,Text, ScrollView,Modal,Button
 } from "react-native";
-import MyScreen from "../Screens/MyScreen";
+import MyScreen from "../screens/MyScreen";
 
 export default class MyInput extends React.Component{
     data = [];

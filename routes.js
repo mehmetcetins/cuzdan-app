@@ -4,9 +4,9 @@ import {createStackNavigator} from "react-navigation-stack";
 import {createBottomTabNavigator} from "react-navigation-tabs";
 import {MaterialIcons} from "react-native-vector-icons";
 
-import MyScreen from "./Screens/MyScreen";
-import Home from "./Screens/HomeScreen";
-import TabTest from "./Screens/tabBarTest";
+import MyScreen from "./screens/MyScreen";
+import Home from "./screens/HomeScreen";
+import TabTest from "./screens/tabBarTest";
 const getTabBarIcon = icon => ({ tintColor }) => (
     <MaterialIcons name={icon} size={26} style={{ color: tintColor }} />
   );
