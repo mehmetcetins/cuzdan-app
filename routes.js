@@ -6,6 +6,7 @@ import {MaterialIcons} from "react-native-vector-icons";
 
 import MyScreen from "./screens/MyScreen";
 import Home from "./screens/HomeScreen";
+import AddingScreen from "./screens/AddingScreen";
 import TabTest from "./screens/tabBarTest";
 const getTabBarIcon = icon => ({ tintColor }) => (
     <MaterialIcons name={icon} size={26} style={{ color: tintColor }} />
@@ -14,6 +15,12 @@ const HomeScreens = createStackNavigator(
     {
         Home,
         MyScreen,
+        Adding: {
+            screen : AddingScreen,
+            navigationOptions:{
+                title: 'Yeni Ürün'
+            }
+        },
     },
     {
         mode:"Card",

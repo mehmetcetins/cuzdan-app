@@ -1,6 +1,5 @@
 import React from "react";
-import {StyleSheet,View} from "react-native";
-import {Text} from "react-native-svg";
+import {StyleSheet,View,Button} from "react-native";
 import MyInput from "../components/myInput";
 import {VictoryChart,VictoryLine} from "victory-native";
 import * as tf from '@tensorflow/tfjs';
@@ -48,10 +47,10 @@ export default class Home extends React.Component{
             loss: "meanSquaredError",
             metrics : [tf.metrics.meanAbsoluteError],
         });
-        console.log(inputs+ " "+outputs);
+        //console.log(inputs+ " "+outputs);
         inputs = tf.tensor(inputs);
         outputs = tf.tensor(outputs);
-        console.log(inputs+ " "+outputs);
+        //console.log(inputs+ " "+outputs);
         await this.model.fit(inputs,outputs,{
             epochs:10,
             batchSize:1,
@@ -81,7 +80,7 @@ export default class Home extends React.Component{
         this.setState({isTfReady:true});
 
         this.model = tf.sequential();
-        this.createModel();
+        //this.createModel();
         
     }
 
@@ -103,6 +102,7 @@ export default class Home extends React.Component{
                 <VictoryChart>
                     <VictoryLine data = {graphsData} x="d" y = "price"/>
                 </VictoryChart>
+                <Button title={"Ekle"} onPress= {()=>navigate("Adding")}></Button>
                 <MyInput navigateFunc={navigate}></MyInput>
             </View>
         );
