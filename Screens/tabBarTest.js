@@ -9,8 +9,10 @@ import {
 
 } from "react-native";
 import MyScreen from "./MyScreen";
-//import {openDatabase} from 'react-native-sqlite-storage';
+import {VictoryChart,VictoryBar,VictoryPie,VictoryTheme} from "victory-native";
+
 import * as SQLite from "expo-sqlite";
+import { ScrollView } from "react-native-gesture-handler";
 var db = SQLite.openDatabase("test.db");
 
 export default class TabTest extends React.Component{
@@ -72,16 +74,41 @@ export default class TabTest extends React.Component{
     
     render(){
         const {items,showModal} = this.state;
+        const dummyFreq = [
+            {product:'cikolata', amount:30},
+            {product:'muz', amount:100},
+            {product:'viski', amount:15},
+            {product:'ayakkabı', amount:3},
+        ]
+
+        const dummyPercent = [
+            {category:'ıvır zıvır',percent :40},
+            {category:'giyim',percent : 25},
+            {category:'faturalar',percent :35 },
+            
+        ]
         return (
             <View style={styles.container}>
-                <Text>Mehmet ÇETİN</Text>
-                <Button title="ekle" onPress={this.ekleme}></Button>
-                <Button title="listele" onPress={()=>{this.listele(),this.show()}}></Button>
-                <View>
-                    <Modal  animationType="slide" visible={showModal} onRequestClose={()=>this.close()}>
-                        <MyScreen addItem={items}></MyScreen>
-                    </Modal>
-                </View>
+                <ScrollView>
+                    <View style={styles.container}>
+                        <Text>Mehmet ÇETİN</Text>
+                        <Button title="ekle" onPress={this.ekleme}></Button>
+                        <Button title="listele" onPress={()=>{this.listele(),this.show()}}></Button>
+                        <View>
+                            <Modal  animationType="slide" visible={showModal} onRequestClose={()=>this.close()}>
+                                <MyScreen addItem={items}></MyScreen>
+                            </Modal>
+                        </View>
+                    </View>
+                    <View style={{flex:1}}>
+                        <VictoryChart theme={VictoryTheme.material} domainPadding={30}>
+                            <VictoryBar data={dummyFreq} x = 'product' y = 'amount' y0="0" ></VictoryBar>
+                            
+                        </VictoryChart>
+
+                        <VictoryPie theme={VictoryTheme.material} data = {dummyPercent} x= "category" y = "percent"></VictoryPie>
+                    </View>
+                </ScrollView>
             </View>
         );
     }

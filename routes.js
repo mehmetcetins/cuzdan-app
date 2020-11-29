@@ -23,6 +23,7 @@ const HomeScreens = createStackNavigator(
         },
     },
     {
+        
         mode:"Card",
         initialRouteName:"Home",
         navigationOptions:{
@@ -38,13 +39,17 @@ const TabBarTest = createBottomTabNavigator(
             screen: TabTest,
             navigationOptions:{
                 tabBarIcon: getTabBarIcon("assessment"),
+                
             },
         },
     },
     {
+        
         initialRouteName:"Home",
         tabBarPosition: "Bottom",
-
+        tabBarOptions:{
+            showLabel:false,
+        }
     }
 )
 
