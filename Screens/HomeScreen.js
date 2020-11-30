@@ -4,8 +4,7 @@ import MyInput from "../components/myInput";
 import {VictoryChart,VictoryLine} from "victory-native";
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-react-native';
-import { model } from "@tensorflow/tfjs";
-
+import * as firebase from "firebase";
 
 export default class Home extends React.Component{
     constructor(props){
@@ -23,6 +22,7 @@ export default class Home extends React.Component{
             {d:5,price :40},
         ],
     };
+
 
     randomInt(min,max){
         return Math.floor(Math.random() * (max - min)) + min;
@@ -75,12 +75,51 @@ export default class Home extends React.Component{
         console.log(this.state.graphsData);
     }
     
-    async componentDidMount(){
-        await tf.ready();
+    kayitol(){
+        firebase.auth().createUserWithEmailAndPassword("mehmet.cetin14@ogr.sakarya.edu.tr","test123").catch((error)=>{
+            console.log(error);
+        });
+    }
+
+    girisYap(){
+        firebase.auth().signInWithEmailAndPassword("mehmet.cetin14@ogr.sakarya.edu.tr","test123");
+    }
+    componentDidMount(){
+        /*await tf.ready();
         this.setState({isTfReady:true});
 
         this.model = tf.sequential();
-        //this.createModel();
+        
+        this.createModel();*/
+        
+        var firebaseConfig = {
+            apiKey: "AIzaSyAaTnLART9qx_m9QxM9j47XSVocsp1YmD0",
+            authDomain: "cuzdan-app.firebaseapp.com",
+            databaseURL: "https://cuzdan-app.firebaseio.com",
+            projectId: "cuzdan-app",
+            storageBucket: "cuzdan-app.appspot.com",
+            messagingSenderId: "569554745849",
+            appId: "1:569554745849:web:772a67a431593f5b5d6528",
+            measurementId: "G-G19RPZHDNQ"
+        };    
+        // Initialize Firebase
+        if(!firebase.apps.length){
+            firebase.initializeApp(firebaseConfig);
+        }
+        
+
+        //firebase.analytics();
+    
+        firebase.auth().onAuthStateChanged((user)=>{
+            if(user){
+                console.log("giriş yapıldı.");
+            }
+            else{
+                console.log("giriş yapılamadı.");
+            }
+        });
+        this.girisYap();
+        
         
     }
 

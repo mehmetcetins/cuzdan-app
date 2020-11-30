@@ -10,7 +10,8 @@ import{
     Text
 } from "react-native";
 import * as SQLite from "expo-sqlite";
-import { add } from "react-native-reanimated";
+import * as FirebaseCore from 'expo-firebase-core';
+import * as firebase from 'firebase';
 
 var db = SQLite.openDatabase("test.db");
 export default class AddingScreen extends React.Component{
@@ -48,6 +49,13 @@ export default class AddingScreen extends React.Component{
                 console.log("basarıyla kaydedildi.")
             });
         });
+        firebase.database().ref("boughts").set({
+            name: name,
+            price: price,
+            date: Date(Date.now())
+        }).catch((error)=>{
+            console.log("error")
+        });
         this.boughtList();
     }
 
@@ -82,6 +90,11 @@ export default class AddingScreen extends React.Component{
     priceChanged(newPrice){
         this.setState({price:newPrice});
     }
+
+    componentDidMount(){
+        console.log(FirebaseCore.DEFAULT_APP_OPTIONS);
+    }
+
     render(){
         const {items} = this.state;
         return (

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "569554745849",
+    "firebase_url": "https://cuzdan-app.firebaseio.com",
+    "project_id": "cuzdan-app",
+    "storage_bucket": "cuzdan-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:569554745849:android:a79f9b415a578a735d6528",
+        "android_client_info": {
+          "package_name": "com.nobit.cuzdan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "569554745849-6hv5e61bjd7rfg6m4oefblhqkhul4ctf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyArIvmqF3qO8GluyL8DmJRAlVbVGkaK1-w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "569554745849-6hv5e61bjd7rfg6m4oefblhqkhul4ctf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
