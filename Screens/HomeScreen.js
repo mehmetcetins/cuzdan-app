@@ -1,5 +1,11 @@
 import React from "react";
-import {StyleSheet,View,Button} from "react-native";
+import {
+    StyleSheet,
+    View,
+    Button,
+    Modal,
+
+} from "react-native";
 import MyInput from "../components/myInput";
 import {VictoryChart,VictoryLine} from "victory-native";
 import * as tf from '@tensorflow/tfjs';
@@ -21,6 +27,7 @@ export default class Home extends React.Component{
             {d:4,price :35},
             {d:5,price :40},
         ],
+        showLoginModal:false,
     };
 
 
@@ -92,36 +99,13 @@ export default class Home extends React.Component{
         
         this.createModel();*/
         
-        var firebaseConfig = {
-            apiKey: "AIzaSyAaTnLART9qx_m9QxM9j47XSVocsp1YmD0",
-            authDomain: "cuzdan-app.firebaseapp.com",
-            databaseURL: "https://cuzdan-app.firebaseio.com",
-            projectId: "cuzdan-app",
-            storageBucket: "cuzdan-app.appspot.com",
-            messagingSenderId: "569554745849",
-            appId: "1:569554745849:web:772a67a431593f5b5d6528",
-            measurementId: "G-G19RPZHDNQ"
-        };    
-        // Initialize Firebase
-        if(!firebase.apps.length){
-            firebase.initializeApp(firebaseConfig);
-        }
-        
 
-        //firebase.analytics();
-    
-        firebase.auth().onAuthStateChanged((user)=>{
-            if(user){
-                console.log("giriş yapıldı.");
-            }
-            else{
-                console.log("giriş yapılamadı.");
-            }
-        });
-        this.girisYap();
+        //this.girisYap();
         
         
     }
+
+
 
     render(){
         let dummyData=[

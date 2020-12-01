@@ -7,6 +7,7 @@ import {MaterialIcons} from "react-native-vector-icons";
 import MyScreen from "./screens/MyScreen";
 import Home from "./screens/HomeScreen";
 import AddingScreen from "./screens/AddingScreen";
+import LoginScreen from "./screens/LoginScreen";
 import TabTest from "./screens/tabBarTest";
 const getTabBarIcon = icon => ({ tintColor }) => (
     <MaterialIcons name={icon} size={26} style={{ color: tintColor }} />
@@ -21,11 +22,12 @@ const HomeScreens = createStackNavigator(
                 title: 'Yeni Ürün'
             }
         },
+        LoginScreen,
     },
     {
         
         mode:"Card",
-        initialRouteName:"Home",
+        initialRouteName:"LoginScreen",
         navigationOptions:{
             tabBarIcon : getTabBarIcon("home")
         }
