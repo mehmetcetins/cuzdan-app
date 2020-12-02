@@ -14,6 +14,7 @@ export default class LoginScreen extends React.Component{
     state={
         email:"",
         password:"",
+        error:null,
     };
 
     componentDidMount(){
@@ -47,7 +48,13 @@ export default class LoginScreen extends React.Component{
             }
         });
     }
+
+    clearErrorMessage(){
+        this.setState({error:null});
+    }
+
     async signIn(){
+        this.clearErrorMessage();
         console.log("giriş denemesi");
         console.log(this.state.email,this.state.password)
         await firebase.auth().signInWithEmailAndPassword(this.state.email,this.state.password)
@@ -58,24 +65,44 @@ export default class LoginScreen extends React.Component{
         )
         .catch(
             (error)=>{
-                console.log(error);
+                this.setState({error:error});
             }
         );
     }
-
+    async signUp(){
+        this.clearErrorMessage();
+        console.log("kayit denemesi");
+        console.log(this.state.email,this.state.password);
+        await  firebase.auth().createUserWithEmailAndPassword(this.state.email,this.state.password)
+        .then(
+            (result)=>{
+                console.log(result);
+            }
+        )
+        .catch(
+            (error)=>{
+                console.log(error.message)
+                this.setState({error:error});
+            }
+        )
+    }
     render(){
+        const {error} = this.state;
         return(
             <View style={styles.container}>
-                <TextInput  style={styles.inputs} placeholder="E-mail" onChangeText={(text)=>{this.setState({email:text})}}></TextInput>
+                {error && (
+                    <Text style={{width:Dimensions.get("screen").width-40,fontSize:18}}>{error.message}</Text>
+                )}
+                <TextInput keyboardType="email-address" autoCapitalize="none"  style={styles.inputs} placeholder="E-mail" onChangeText={(text)=>{this.setState({email:text})}}></TextInput>
                 <TextInput secureTextEntry={true}  style = {styles.inputs}placeholder="Password" onChangeText={(text)=>{this.setState({password:text})}}></TextInput>
                 <TouchableOpacity style={styles.buttons} onPress={()=>this.signIn()} >
                     <View >
                         <Text style={styles.buttonText}  >Giris Yap</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.buttons}>
+                <TouchableOpacity style={styles.buttons} onPress={()=>this.signUp()}>
                     <View>
-                        <Text style={styles.buttonText}>Kayıt Ol</Text>
+                        <Text style={styles.buttonText} >Kayıt Ol</Text>
                     </View>
                 </TouchableOpacity>
             </View>

@@ -40,7 +40,7 @@ export default class AddingScreen extends React.Component{
         price:'',
         items: [],
     };
-    addBought(){
+    async addBought(){
         const {name,price} = this.state;
 
         
@@ -49,12 +49,25 @@ export default class AddingScreen extends React.Component{
                 console.log("basarıyla kaydedildi.")
             });
         });
-        firebase.database().ref("boughts").set({
+        let userBoughtRef = firebase.database().ref("boughts")
+        await userBoughtRef.child(firebase.auth().currentUser.uid).once('value',
+            (snapshot) => {
+                if (snapshot.val() !== null){
+                    //console.log("var")
+                }
+                else{
+                    userBoughtRef.set(firebase.auth().currentUser.email)
+                }
+            }
+        )
+        userBoughtRef = userBoughtRef.child(firebase.auth().currentUser.uid);
+        let userBoughtRefId = userBoughtRef.push().key;
+        userBoughtRef.push(userBoughtRefId).set({
             name: name,
             price: price,
             date: Date(Date.now())
         }).catch((error)=>{
-            console.log("error")
+            console.log(error)
         });
         this.boughtList();
     }
