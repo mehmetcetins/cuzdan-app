@@ -50,16 +50,16 @@ export default class AddingScreen extends React.Component{
             });
         });
         let userBoughtRef = firebase.database().ref("boughts")
-        await userBoughtRef.child(firebase.auth().currentUser.uid).once('value',
+        /*await userBoughtRef.child(firebase.auth().currentUser.uid).once('value',
             (snapshot) => {
                 if (snapshot.val() !== null){
                     //console.log("var")
                 }
                 else{
-                    userBoughtRef.set(firebase.auth().currentUser.email)
+                    //userBoughtRef.push(firebase.auth().currentUser.uid)
                 }
             }
-        )
+        )*/
         userBoughtRef = userBoughtRef.child(firebase.auth().currentUser.uid);
         let userBoughtRefId = userBoughtRef.push().key;
         userBoughtRef.push(userBoughtRefId).set({

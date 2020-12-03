@@ -102,7 +102,7 @@ export default class Home extends React.Component{
 
         //this.girisYap();
         
-        
+        //firebase.auth().signOut();
     }
 
 

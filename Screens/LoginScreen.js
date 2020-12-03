@@ -6,6 +6,7 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
+    ActivityIndicator,
 } from "react-native";
 import {Dimensions} from "react-native";
 import * as firebase from "firebase";
@@ -15,6 +16,8 @@ export default class LoginScreen extends React.Component{
         email:"",
         password:"",
         error:null,
+        loading:true,
+        
     };
 
     componentDidMount(){
@@ -40,11 +43,15 @@ export default class LoginScreen extends React.Component{
             if(user){
                 console.log("giriş yapıldı.")
                 //firebase.auth().signOut();
-                navigate("Home");
+
+                navigate("Tab");
+                
             }
             else{
                 console.log("giriş yapılamadı.")
-                navigate("LoginScreen");
+                
+                navigate("Login");
+                
             }
         });
     }
@@ -60,6 +67,7 @@ export default class LoginScreen extends React.Component{
         await firebase.auth().signInWithEmailAndPassword(this.state.email,this.state.password)
         .then(
             (result)=>{
+                
                 console.log(result);
             }
         )
@@ -73,6 +81,7 @@ export default class LoginScreen extends React.Component{
         this.clearErrorMessage();
         console.log("kayit denemesi");
         console.log(this.state.email,this.state.password);
+        this.setState({loading:true});
         await  firebase.auth().createUserWithEmailAndPassword(this.state.email,this.state.password)
         .then(
             (result)=>{
@@ -87,14 +96,26 @@ export default class LoginScreen extends React.Component{
         )
     }
     render(){
-        const {error} = this.state;
+        const {error,loading} = this.state;
+        let passwordInput = React.createRef();
         return(
             <View style={styles.container}>
                 {error && (
                     <Text style={{width:Dimensions.get("screen").width-40,fontSize:18}}>{error.message}</Text>
                 )}
-                <TextInput keyboardType="email-address" autoCapitalize="none"  style={styles.inputs} placeholder="E-mail" onChangeText={(text)=>{this.setState({email:text})}}></TextInput>
-                <TextInput secureTextEntry={true}  style = {styles.inputs}placeholder="Password" onChangeText={(text)=>{this.setState({password:text})}}></TextInput>
+                {loading && (
+                    <ActivityIndicator size="large"></ActivityIndicator>
+                )}
+                <TextInput 
+                autoFocus={true} 
+                keyboardType="email-address" 
+                autoCapitalize="none"  
+                style={styles.inputs} 
+                placeholder="E-mail" 
+                onChangeText={(text)=>{this.setState({email:text})}}
+                onSubmitEditing={()=>passwordInput.current.focus()}
+                ></TextInput>
+                <TextInput ref={passwordInput} secureTextEntry={true}  style = {styles.inputs}placeholder="Password" onChangeText={(text)=>{this.setState({password:text})}}></TextInput>
                 <TouchableOpacity style={styles.buttons} onPress={()=>this.signIn()} >
                     <View >
                         <Text style={styles.buttonText}  >Giris Yap</Text>

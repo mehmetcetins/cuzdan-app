@@ -1,5 +1,5 @@
 import React from "react";
-import {createAppContainer} from "react-navigation";
+import {createAppContainer,createSwitchNavigator} from "react-navigation";
 import {createStackNavigator} from "react-navigation-stack";
 import {createBottomTabNavigator} from "react-navigation-tabs";
 import {MaterialIcons} from "react-native-vector-icons";
@@ -22,12 +22,11 @@ const HomeScreens = createStackNavigator(
                 title: 'Yeni Ürün'
             }
         },
-        LoginScreen,
     },
     {
         
         mode:"Card",
-        initialRouteName:"LoginScreen",
+        initialRouteName:"Home",
         navigationOptions:{
             tabBarIcon : getTabBarIcon("home")
         }
@@ -46,13 +45,26 @@ const TabBarTest = createBottomTabNavigator(
         },
     },
     {
-        
-        initialRouteName:"Home",
+        initialRouteName:'Home',
         tabBarPosition: "Bottom",
         tabBarOptions:{
             showLabel:false,
         }
     }
-)
+);
 
-export default createAppContainer(TabBarTest);
+
+
+const testSwitch = createSwitchNavigator(
+    {
+        
+        Login:LoginScreen,
+        Tab:TabBarTest,
+    },
+    {
+        initialRouteName:'Login'
+    }
+    
+);
+
+export default createAppContainer(testSwitch);
