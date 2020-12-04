@@ -9,18 +9,34 @@ import{
     ScrollView,
     Text
 } from "react-native";
+import DateTimePicker from '@react-native-community/datetimepicker';
 import * as SQLite from "expo-sqlite";
 import * as FirebaseCore from 'expo-firebase-core';
 import * as firebase from 'firebase';
+
 
 var db = SQLite.openDatabase("test.db");
 export default class AddingScreen extends React.Component{
 
     constructor(props){
         super(props);
+        /*db.transaction((txn)=>{
+            txn.executeSql("DROP TABLE  boughts;",
+            [],
+                ()=>{
+                    console.log("tablo silindi.");
+                },
+                ()=>{
+                    console.log("tablo silmede hata yasandı.");
+                }
+                
+            );
+        });
+        
+       */
         db.transaction((txn) => {
             txn.executeSql(
-                "CREATE TABLE IF NOT EXISTS boughts ( id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(100) NOT NULL, price REAL NOT NULL, date TEXT  );",
+                "CREATE TABLE IF NOT EXISTS boughts ( id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(100) NOT NULL, price REAL NOT NULL,quantity REAL NOT NULL, date TEXT  );",
                 [],
                 ()=>{
                     console.log("tablo olusturuldu.");
@@ -35,17 +51,21 @@ export default class AddingScreen extends React.Component{
 
         this.boughtList();
     };
+
+
     state = {
         name:'',
         price:'',
+        quantity:'',
         items: [],
+        date : null,
     };
     async addBought(){
-        const {name,price} = this.state;
+        const {name,price,quantity} = this.state;
 
         
         db.transaction((txn)=>{
-            txn.executeSql("INSERT INTO boughts (name, price , date)  values(?,?,datetime('now'))",[name,price],()=>{
+            txn.executeSql("INSERT INTO boughts (name, price, quantity , date)  values(?,?,?,datetime('now'))",[name,price,quantity],()=>{
                 console.log("basarıyla kaydedildi.")
             });
         });
@@ -65,6 +85,7 @@ export default class AddingScreen extends React.Component{
         userBoughtRef.push(userBoughtRefId).set({
             name: name,
             price: price,
+            quantity:quantity,
             date: Date(Date.now())
         }).catch((error)=>{
             console.log(error)
@@ -84,6 +105,7 @@ export default class AddingScreen extends React.Component{
                                 <Text>id: {_array[i].id}</Text>
                                 <Text>name: {_array[i].name}</Text>
                                 <Text>price: {_array[i].price}</Text>
+                                <Text>quantity: {_array[i].quantity}</Text>
                                 <Text>date: {_array[i].date}</Text>
                             </View>
                         );
@@ -103,18 +125,24 @@ export default class AddingScreen extends React.Component{
     priceChanged(newPrice){
         this.setState({price:newPrice});
     }
+    quantityChanged(newQuantity){
+        this.setState({quantity:newQuantity});
+    }
 
     componentDidMount(){
         console.log(FirebaseCore.DEFAULT_APP_OPTIONS);
     }
 
     render(){
-        const {items} = this.state;
+        const {items,date} = this.state;
+        //<DateTimePicker value = {date} mode= "date" display="default"></DateTimePicker>
         return (
             <View style={styles.container}>
                 <View >
                     <TextInput style={styles.addingInputs} placeholder="bir ürün ismi girin." onChangeText={(name) => this.nameChanged(name)}></TextInput>
                     <TextInput style={styles.addingInputs} placeholder = "fiyatı" keyboardType="number-pad" onChangeText={(price) => this.priceChanged(price)} ></TextInput>
+                    <TextInput style={styles.addingInputs} placeholder = "adeti" keyboardType="number-pad" onChangeText={(quantity) => this.quantityChanged(quantity)} ></TextInput>
+                    
                 </View>
                 <Button  title = "ekle"  onPress={()=> this.addBought()}></Button>
                 <ScrollView>{items}</ScrollView>
