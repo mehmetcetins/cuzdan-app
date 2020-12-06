@@ -13,6 +13,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as SQLite from "expo-sqlite";
 import * as FirebaseCore from 'expo-firebase-core';
 import * as firebase from 'firebase';
+import ProductList from "../components/productList";
+import { Prod } from "@tensorflow/tfjs";
 
 
 var db = SQLite.openDatabase("test.db");
@@ -100,14 +102,17 @@ export default class AddingScreen extends React.Component{
                 (_,{rows:{_array}})=>{
                     var allBoughts = [];
                     for(let i = 0 ; i<_array.length;i++){
-                        allBoughts.push(
-                            <View key={i} style={styles.test}>
-                                <Text>id: {_array[i].id}</Text>
-                                <Text>name: {_array[i].name}</Text>
-                                <Text>price: {_array[i].price}</Text>
-                                <Text>quantity: {_array[i].quantity}</Text>
-                                <Text>date: {_array[i].date}</Text>
-                            </View>
+                        
+                        allBoughts.push({
+                            
+                                key:i,
+                                name:_array[i].name,
+                                price:_array[i].price,
+                                quantity:_array[i].quantity,
+                                date:_array[i].date,
+                            
+                        }
+                            
                         );
                     }
                     this.setState({items:allBoughts});
@@ -145,7 +150,9 @@ export default class AddingScreen extends React.Component{
                     
                 </View>
                 <Button  title = "ekle"  onPress={()=> this.addBought()}></Button>
-                <ScrollView>{items}</ScrollView>
+                <ScrollView>
+                    <ProductList products={items}/>
+                </ScrollView>
             </View>
         );
     }
@@ -163,12 +170,6 @@ const styles = StyleSheet.create({
         padding:10,
     },
 
-    test:{
-        flex:1,
-        flexDirection:'row',
-        alignItems:"stretch",
-        justifyContent:"space-around",
-        marginTop:10,
-    }
+
 
 });
