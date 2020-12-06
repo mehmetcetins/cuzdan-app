@@ -43,24 +43,27 @@ export default class LoginScreen extends React.Component{
             if(user){
                 console.log("giriş yapıldı.")
                 //firebase.auth().signOut();
-
+                this.closeLoading();
                 navigate("Tab");
                 
             }
             else{
                 console.log("giriş yapılamadı.")
-                
+                this.closeLoading();
                 navigate("Login");
                 
             }
         });
     }
-
+    closeLoading(){
+        this.setState({loading:false});
+    }
     clearErrorMessage(){
         this.setState({error:null});
     }
 
     async signIn(){
+        this.setState({loading:true});
         this.clearErrorMessage();
         console.log("giriş denemesi");
         console.log(this.state.email,this.state.password)
@@ -78,6 +81,7 @@ export default class LoginScreen extends React.Component{
         );
     }
     async signUp(){
+        this.setState({loading:true});
         this.clearErrorMessage();
         console.log("kayit denemesi");
         console.log(this.state.email,this.state.password);
@@ -103,29 +107,32 @@ export default class LoginScreen extends React.Component{
                 {error && (
                     <Text style={{width:Dimensions.get("screen").width-40,fontSize:18}}>{error.message}</Text>
                 )}
-                {loading && (
-                    <ActivityIndicator size="large"></ActivityIndicator>
-                )}
-                <TextInput 
-                autoFocus={true} 
-                keyboardType="email-address" 
-                autoCapitalize="none"  
-                style={styles.inputs} 
-                placeholder="E-mail" 
-                onChangeText={(text)=>{this.setState({email:text})}}
-                onSubmitEditing={()=>passwordInput.current.focus()}
-                ></TextInput>
-                <TextInput ref={passwordInput} secureTextEntry={true}  style = {styles.inputs}placeholder="Password" onChangeText={(text)=>{this.setState({password:text})}}></TextInput>
-                <TouchableOpacity style={styles.buttons} onPress={()=>this.signIn()} >
-                    <View >
-                        <Text style={styles.buttonText}  >Giris Yap</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.buttons} onPress={()=>this.signUp()}>
+                
+                <ActivityIndicator size="large" color='#999999' animating={loading}/>
+                {!loading && (
                     <View>
-                        <Text style={styles.buttonText} >Kayıt Ol</Text>
+                        <TextInput 
+                        autoFocus={true} 
+                        keyboardType="email-address" 
+                        autoCapitalize="none"  
+                        style={styles.inputs} 
+                        placeholder="E-mail" 
+                        onChangeText={(text)=>{this.setState({email:text})}}
+                        onSubmitEditing={()=>passwordInput.current.focus()}
+                        ></TextInput>
+                        <TextInput ref={passwordInput} secureTextEntry={true}  style = {styles.inputs}placeholder="Password" onChangeText={(text)=>{this.setState({password:text})}}></TextInput>
+                        <TouchableOpacity style={styles.buttons} onPress={()=>this.signIn()} >
+                            <View >
+                                <Text style={styles.buttonText}  >Giris Yap</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.buttons} onPress={()=>this.signUp()}>
+                            <View>
+                                <Text style={styles.buttonText} >Kayıt Ol</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
-                </TouchableOpacity>
+                )}
             </View>
         );
     }
