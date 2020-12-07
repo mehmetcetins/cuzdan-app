@@ -14,7 +14,6 @@ import * as SQLite from "expo-sqlite";
 import * as FirebaseCore from 'expo-firebase-core';
 import * as firebase from 'firebase';
 import ProductList from "../components/productList";
-import { Prod } from "@tensorflow/tfjs";
 
 
 var db = SQLite.openDatabase("test.db");

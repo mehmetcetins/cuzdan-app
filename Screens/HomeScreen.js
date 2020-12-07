@@ -11,6 +11,7 @@ import {VictoryChart,VictoryLine} from "victory-native";
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-react-native';
 import * as firebase from "firebase";
+import { interpolate } from "react-native-reanimated";
 
 export default class Home extends React.Component{
     constructor(props){
@@ -103,6 +104,25 @@ export default class Home extends React.Component{
         //this.girisYap();
         
         //firebase.auth().signOut();
+
+
+        const boughtList = firebase.database().ref("boughts").child(firebase.auth().currentUser.uid).on('value',
+            (snapshot) => {
+                var purchased = [];
+                var currentDateofMonth;
+                var oldPrice;
+                for (const[key,value] of Object.entries(snapshot.val())){
+                    oldPrice = 0;
+                    currentDateofMonth = new Date(Date.parse(value.date)).getDate()
+                    if (purchased[currentDateofMonth]){
+                        oldPrice = purchased[currentDateofMonth].price
+                    }
+                    purchased[currentDateofMonth] = {price:oldPrice+parseFloat(value.price),d:currentDateofMonth}
+                }
+                this.setState({graphsData:purchased});
+            }
+        );
+
     }
 
 

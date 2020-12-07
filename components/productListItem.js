@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
         marginTop:10,
     },
     productLabels:{
+        width:100,
         fontWeight:"bold",
         color:"black",
     }

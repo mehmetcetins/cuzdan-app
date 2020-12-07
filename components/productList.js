@@ -8,8 +8,9 @@ export default class ProductList extends React.Component{
     render(){
         const {products} = this.props;
         return(
-            <View key={0}>
+            <View key={-1}>
                 {products.map((value,_) => {
+                    console.log(value)
                     return <ProductListItem product={value}/>
                 })
                 }
