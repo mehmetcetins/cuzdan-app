@@ -111,13 +111,16 @@ export default class Home extends React.Component{
                 var purchased = [];
                 var currentDateofMonth;
                 var oldPrice;
-                for (const[key,value] of Object.entries(snapshot.val())){
-                    oldPrice = 0;
-                    currentDateofMonth = new Date(Date.parse(value.date)).getDate()
-                    if (purchased[currentDateofMonth]){
-                        oldPrice = purchased[currentDateofMonth].price
+                if(snapshot.val()){
+
+                    for (const[key,value] of Object.entries(snapshot.val())){
+                        oldPrice = 0;
+                        currentDateofMonth = new Date(Date.parse(value.date)).getDate()
+                        if (purchased[currentDateofMonth]){
+                            oldPrice = purchased[currentDateofMonth].price
+                        }
+                        purchased[currentDateofMonth] = {price:oldPrice+parseFloat(value.price),d:currentDateofMonth}
                     }
-                    purchased[currentDateofMonth] = {price:oldPrice+parseFloat(value.price),d:currentDateofMonth}
                 }
                 this.setState({graphsData:purchased});
             }

@@ -10,6 +10,7 @@ import AddingScreen from "./screens/AddingScreen";
 import LoginScreen from "./screens/LoginScreen";
 import TabTest from "./screens/tabBarTest";
 import CategoryAddingScreen from "./screens/CategoryAddingScreen";
+import CategorySelectingScreen from "./screens/CategorySelectingScreen";
 
 const getTabBarIcon = icon => ({ tintColor }) => (
     <MaterialIcons name={icon} size={26} style={{ color: tintColor }} />
@@ -28,6 +29,12 @@ const HomeScreens = createStackNavigator(
             screen : CategoryAddingScreen,
             navigationOptions:{
                 title: 'Yeni Kategori',
+            }
+        },
+        CategorySelecting:{
+            screen:CategorySelectingScreen,
+            navigationOptions:{
+                title: 'Kategori Seç'
             }
         }
     },
