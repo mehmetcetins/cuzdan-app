@@ -146,6 +146,7 @@ export default class Home extends React.Component{
                     <VictoryLine data = {graphsData} x="d" y = "price"/>
                 </VictoryChart>
                 <Button title={"Ekle"} onPress= {()=>navigate("Adding")}></Button>
+                <Button title={"Kategori Ekle"} onPress= {()=>navigate("CategoryAdding")}></Button>
                 <MyInput navigateFunc={navigate}></MyInput>
             </View>
         );

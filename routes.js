@@ -9,6 +9,8 @@ import Home from "./screens/HomeScreen";
 import AddingScreen from "./screens/AddingScreen";
 import LoginScreen from "./screens/LoginScreen";
 import TabTest from "./screens/tabBarTest";
+import CategoryAddingScreen from "./screens/CategoryAddingScreen";
+
 const getTabBarIcon = icon => ({ tintColor }) => (
     <MaterialIcons name={icon} size={26} style={{ color: tintColor }} />
   );
@@ -19,9 +21,15 @@ const HomeScreens = createStackNavigator(
         Adding: {
             screen : AddingScreen,
             navigationOptions:{
-                title: 'Yeni Ürün'
+                title: 'Yeni Ürün',
             }
         },
+        CategoryAdding: {
+            screen : CategoryAddingScreen,
+            navigationOptions:{
+                title: 'Yeni Kategori',
+            }
+        }
     },
     {
         
