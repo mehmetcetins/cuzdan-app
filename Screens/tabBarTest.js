@@ -10,9 +10,10 @@ import {
 } from "react-native";
 import MyScreen from "./MyScreen";
 import {VictoryChart,VictoryBar,VictoryPie,VictoryTheme} from "victory-native";
-
+import * as firebase from "firebase";
 import * as SQLite from "expo-sqlite";
 import { ScrollView } from "react-native-gesture-handler";
+import { data } from "@tensorflow/tfjs";
 var db = SQLite.openDatabase("test.db");
 
 export default class TabTest extends React.Component{
@@ -34,6 +35,7 @@ export default class TabTest extends React.Component{
     state = {
         showModal:false,
         items:[],
+        frequency:[],
     }
     setItems(results){
         data = [];
@@ -71,9 +73,43 @@ export default class TabTest extends React.Component{
 
     }
 
+    componentDidMount(){
+        const database = firebase.database();
+        database.ref("boughts").child(firebase.auth().currentUser.uid).on("value",(snapshot) => {
+            var entries = Object.entries(snapshot.val());
+            var quantitySum = 0;
+            var productName = "";
+            var isThere = false;
+            var quantityFreqList = [];
+            for (const [key,value] of entries ){
+                productName = value.name;
+                quantitySum = parseFloat(value.quantity);
+                for (var element of quantityFreqList){
+                    isThere=false;
+                   console.log(element.product)
+                    if(element.product == productName){
+                        isThere = true;
+                        break;
+                    }
+                }
+                
+                if(!isThere){
+                    for(const [searchKey,searchValue] of entries){
+                        if(searchKey !== key && searchValue.name === productName){
+                            quantitySum += parseFloat(searchValue.quantity);
+                        }
+                    }
+                    quantityFreqList.push({product:productName,amount:quantitySum});
+                }
+            }
+            console.log(quantityFreqList);
+            this.setState({frequency:quantityFreqList});
+        });
+    }
+
     
     render(){
-        const {items,showModal} = this.state;
+        const {frequency,items,showModal} = this.state;
         const dummyFreq = [
             {product:'cikolata', amount:30},
             {product:'muz', amount:100},
@@ -102,7 +138,7 @@ export default class TabTest extends React.Component{
                     </View>
                     <View style={{flex:1}}>
                         <VictoryChart theme={VictoryTheme.material} domainPadding={30}>
-                            <VictoryBar data={dummyFreq} x = 'product' y = 'amount' y0="0" ></VictoryBar>
+                            <VictoryBar data={frequency} x = 'product' y = 'amount' y0="0" ></VictoryBar>
                             
                         </VictoryChart>
 

@@ -138,7 +138,7 @@ export default class AddingScreen extends React.Component{
                 
             }
             this.setState({items:allBoughts});
-            console.log(allBoughts);
+            //console.log(allBoughts);
         });
         
     }
