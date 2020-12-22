@@ -122,6 +122,7 @@ export default class Home extends React.Component{
                         purchased[currentDateofMonth] = {price:oldPrice+parseFloat(value.price),d:currentDateofMonth}
                     }
                 }
+                console.log(purchased);
                 this.setState({graphsData:purchased});
             }
         );

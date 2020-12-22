@@ -37,6 +37,7 @@ export default class AddingScreen extends React.Component{
         });
         
        */
+      /*
         db.transaction((txn) => {
             txn.executeSql(
                 "CREATE TABLE IF NOT EXISTS boughts ( id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(100) NOT NULL, price REAL NOT NULL,quantity REAL NOT NULL, date TEXT  );",
@@ -50,9 +51,9 @@ export default class AddingScreen extends React.Component{
                 
             )
         
-        });
+        });*/
 
-        this.boughtList();
+        
     };
 
 
@@ -99,7 +100,7 @@ export default class AddingScreen extends React.Component{
     }
 
     boughtList(){
-        
+        /*
         db.transaction((txn)=>{
             txn.executeSql("SELECT *,datetime(date) FROM boughts",[],
                 (_,{rows:{_array}})=>{
@@ -121,6 +122,23 @@ export default class AddingScreen extends React.Component{
                     this.setState({items:allBoughts});
                 }
             );
+        });*/
+
+        const database = firebase.database();
+        const products = database.ref("boughts").child(firebase.auth().currentUser.uid).on('value',(snapshot) => {
+            var allBoughts = [];
+            for (const [key,value] of Object.entries(snapshot.val())){
+                allBoughts.push({
+                    key : key,
+                    name: value.name,
+                    price : value.price,
+                    quantity: value.quantity,
+                    date: value.date,
+                })
+                
+            }
+            this.setState({items:allBoughts});
+            console.log(allBoughts);
         });
         
     }
@@ -138,7 +156,8 @@ export default class AddingScreen extends React.Component{
     }
 
     componentDidMount(){
-        console.log(FirebaseCore.DEFAULT_APP_OPTIONS);
+        //console.log(FirebaseCore.DEFAULT_APP_OPTIONS);
+        this.boughtList();
         this.unsubscribe = store.onChange(()=>{
             this.setState({
                 categoryName:store.getState().categoryName,

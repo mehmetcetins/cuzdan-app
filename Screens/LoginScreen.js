@@ -41,14 +41,14 @@ export default class LoginScreen extends React.Component{
         const {navigation : {navigate}} = this.props;
         firebase.auth().onAuthStateChanged((user)=>{
             if(user){
-                console.log("giriş yapıldı.")
+                console.log("giriş yapıldı.");
                 //firebase.auth().signOut();
                 this.closeLoading();
                 navigate("Tab");
                 
             }
             else{
-                console.log("giriş yapılamadı.")
+                console.log("giriş yapılamadı.");
                 this.closeLoading();
                 navigate("Login");
                 
