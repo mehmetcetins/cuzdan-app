@@ -11,7 +11,7 @@ export default class ProductList extends React.Component{
         return(
             <View key={"productlist"}>
                 {products.map((value,_) => {
-                    console.log(value)
+                    //console.log(value)
                     return <ProductListItem product={value}/>
                 })
                 }

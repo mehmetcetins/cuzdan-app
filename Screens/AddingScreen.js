@@ -4,12 +4,13 @@ import React from "react";
 import{
     StyleSheet,
     View,
-    TextInput,
-    Button,
+    
+   
     ScrollView,
     Text,
     TouchableOpacity,
 } from "react-native";
+import { TextInput,Button } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as SQLite from "expo-sqlite";
 import * as FirebaseCore from 'expo-firebase-core';
@@ -174,14 +175,14 @@ export default class AddingScreen extends React.Component{
         return (
             <View style={styles.container}>
                 <View >
-                    <TextInput style={styles.addingInputs} placeholder="bir ürün ismi girin." onChangeText={(name) => this.nameChanged(name)}></TextInput>
-                    <TextInput style={styles.addingInputs} placeholder = "fiyatı" keyboardType="number-pad" onChangeText={(price) => this.priceChanged(price)} ></TextInput>
-                    <TextInput style={styles.addingInputs} placeholder = "adeti" keyboardType="number-pad" onChangeText={(quantity) => this.quantityChanged(quantity)} ></TextInput>
-                    <TouchableOpacity style={styles.TouchableButton} onPress={()=> navigate('CategorySelecting')}>
-                        <Text>{store.getState().categoryName}</Text>
-                    </TouchableOpacity>
+                    <TextInput label="Ürün Adı" onChangeText={(name) => this.nameChanged(name)}></TextInput>
+                    <TextInput  label = "Fiyatı" keyboardType="number-pad" onChangeText={(price) => this.priceChanged(price)} ></TextInput>
+                    <TextInput  label = "Adeti" keyboardType="number-pad" onChangeText={(quantity) => this.quantityChanged(quantity)} ></TextInput>
+                    <Button mode="outlined" compact={true} onPress={()=> navigate('CategorySelecting')}>
+                        {store.getState().categoryName}
+                    </Button>
                 </View>
-                <Button  title = "ekle"  onPress={()=> this.addBought()}></Button>
+                <Button mode="contained" onPress={()=> this.addBought()}>EKLE</Button>
                 <ScrollView>
                     <ProductList products={items}/>
                 </ScrollView>

@@ -2,10 +2,11 @@ import React from "react";
 import {
     StyleSheet,
     View,
-    Button,
+  
     Modal,
 
 } from "react-native";
+import { Button } from 'react-native-paper';
 import MyInput from "../components/myInput";
 import {VictoryChart,VictoryLine} from "victory-native";
 import * as tf from '@tensorflow/tfjs';
@@ -80,12 +81,12 @@ export default class Home extends React.Component{
         }
         
         this.setState({graphsData: this.state.graphsData.concat(predictions) });
-        console.log(this.state.graphsData);
+        //console.log(this.state.graphsData);
     }
     
     kayitol(){
         firebase.auth().createUserWithEmailAndPassword("mehmet.cetin14@ogr.sakarya.edu.tr","test123").catch((error)=>{
-            console.log(error);
+            //console.log(error);
         });
     }
 
@@ -108,35 +109,39 @@ export default class Home extends React.Component{
 
         const boughtList = firebase.database().ref("boughts").child(firebase.auth().currentUser.uid).on('value',
             (snapshot) => {
-                var purchased = [];
-                var currentDateofMonth;
-                var oldPrice;
-                for (var i = 0; i<30;i++){
-                    purchased.push({
-                        d:i,
-                        price:0,
-                    });
-                };
+                if(snapshot.exists()){
+                    var purchased = [];
+                    var currentDateofMonth;
+                    var oldPrice;
+                    for (var i = 0; i<30;i++){
+                        purchased.push({
+                            d:i,
+                            price:0,
+                        });
+                    };
 
-                if(snapshot.val()){
+                    if(snapshot.val()){
 
-                    for (const[key,value] of Object.entries(snapshot.val())){
-                        oldPrice = 0;
-                        currentDateofMonth = new Date(Date.parse(value.date)).getDate()
+                        for (const[key,value] of Object.entries(snapshot.val())){
+                            oldPrice = 0;
+                            currentDateofMonth = new Date(Date.parse(value.date)).getDate()
 
-                        oldPrice = purchased[currentDateofMonth].price
-                        
-                        purchased[currentDateofMonth] = {price:oldPrice+parseFloat(value.price),d:currentDateofMonth}
+                            oldPrice = purchased[currentDateofMonth].price
+                            
+                            purchased[currentDateofMonth] = {price:oldPrice+parseFloat(value.price),d:currentDateofMonth}
+                        }
                     }
+                    //console.log(purchased);
+                    this.setState({graphsData:purchased}); 
                 }
-                console.log(purchased);
-                this.setState({graphsData:purchased}); 
             }
         );
 
     }
 
-
+    logout(){
+        firebase.auth().signOut();
+    }
 
     render(){
         let dummyData=[
@@ -156,8 +161,9 @@ export default class Home extends React.Component{
                 <VictoryChart>
                     <VictoryLine data = {graphsData} x="d" y = "price"/>
                 </VictoryChart>
-                <Button title={"Ekle"} onPress= {()=>navigate("Adding")}></Button>
-                <Button title={"Kategori Ekle"} onPress= {()=>navigate("CategoryAdding")}></Button>
+                <Button mode="contained" onPress= {()=>navigate("Adding")}>Ekle</Button>
+                <Button mode="contained" onPress= {()=>navigate("CategoryAdding")}>Kategori Ekle</Button>
+                <Button mode="contained"  onPress= {()=>this.logout()}>Çıkış</Button>
                 <MyInput navigateFunc={navigate}></MyInput>
             </View>
         );

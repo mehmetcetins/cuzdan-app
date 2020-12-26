@@ -30,7 +30,7 @@ export default class LoginScreen extends React.Component{
             messagingSenderId: "569554745849",
             appId: "1:569554745849:web:772a67a431593f5b5d6528",
             measurementId: "G-G19RPZHDNQ"
-        };    
+        };
         // Initialize Firebase
         if(!firebase.apps.length){
             firebase.initializeApp(firebaseConfig);

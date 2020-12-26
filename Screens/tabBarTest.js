@@ -36,6 +36,7 @@ export default class TabTest extends React.Component{
         showModal:false,
         items:[],
         frequency:[],
+        percent:[],
     }
     setItems(results){
         data = [];
@@ -72,44 +73,86 @@ export default class TabTest extends React.Component{
 
 
     }
+    frequencyGraph(entries){
+        var quantitySum = 0;
+        var productName = "";
+        var isThere = false;
+        var quantityFreqList = [];
+        for (const [key,value] of entries ){
+            productName = value.name;
+            quantitySum = parseFloat(value.quantity);
+            for (var element of quantityFreqList){
+                isThere=false;
+                if(element.product == productName){
+                    isThere = true;
+                    break;
+                }
+            }
+            
+            if(!isThere){
+                for(const [searchKey,searchValue] of entries){
+                    if(searchKey !== key && searchValue.name === productName){
+                        quantitySum += parseFloat(searchValue.quantity);
+                    }
+                }
+                quantityFreqList.push({product:productName,amount:quantitySum});
+            }
+        }
+        //console.log(quantityFreqList);
+        this.setState({frequency:quantityFreqList});
+    }
+
+    percentGraph(entries){
+        var categoryName = "";
+        var categoryPrice = 0.0;
+        var sumOfAll = 0;
+        var isThere = false;
+        var percentList = [];
+        for (const [key,value] of entries){
+            categoryName = value.categoryName;
+            categoryPrice = parseFloat(value.price);
+            for (var element of percentList){
+                isThere=false;
+                //console.log(element.category);
+                if(element.category == categoryName){
+                    isThere = true;
+                    break;
+                }
+            }
+            //console.log(isThere)
+            if(!isThere){
+                for (const[searchKey,searchValue] of entries){
+                    if (searchKey !== key && searchValue.categoryName === categoryName){
+                        categoryPrice += parseFloat(searchValue.price);
+                    }
+                }
+
+                sumOfAll += categoryPrice;
+                percentList.push({category:categoryName,percent:categoryPrice})
+            }
+            
+        }
+        for (var i = 0;i<percentList.length;i++){
+            
+            percentList[i].percent =  percentList[i].percent/sumOfAll; 
+        }
+        
+        //console.log(percentList);
+        this.setState({percent:percentList})
+    }
 
     componentDidMount(){
         const database = firebase.database();
         database.ref("boughts").child(firebase.auth().currentUser.uid).on("value",(snapshot) => {
             var entries = Object.entries(snapshot.val());
-            var quantitySum = 0;
-            var productName = "";
-            var isThere = false;
-            var quantityFreqList = [];
-            for (const [key,value] of entries ){
-                productName = value.name;
-                quantitySum = parseFloat(value.quantity);
-                for (var element of quantityFreqList){
-                    isThere=false;
-                   console.log(element.product)
-                    if(element.product == productName){
-                        isThere = true;
-                        break;
-                    }
-                }
-                
-                if(!isThere){
-                    for(const [searchKey,searchValue] of entries){
-                        if(searchKey !== key && searchValue.name === productName){
-                            quantitySum += parseFloat(searchValue.quantity);
-                        }
-                    }
-                    quantityFreqList.push({product:productName,amount:quantitySum});
-                }
-            }
-            console.log(quantityFreqList);
-            this.setState({frequency:quantityFreqList});
+            this.frequencyGraph(entries);
+            this.percentGraph(entries);
         });
     }
 
     
     render(){
-        const {frequency,items,showModal} = this.state;
+        const {percent,frequency,items,showModal} = this.state;
         const dummyFreq = [
             {product:'cikolata', amount:30},
             {product:'muz', amount:100},
@@ -142,7 +185,7 @@ export default class TabTest extends React.Component{
                             
                         </VictoryChart>
 
-                        <VictoryPie theme={VictoryTheme.material} data = {dummyPercent} x= "category" y = "percent"></VictoryPie>
+                        <VictoryPie theme={VictoryTheme.material} data = {percent} x= "category" y = "percent"></VictoryPie>
                     </View>
                 </ScrollView>
             </View>
