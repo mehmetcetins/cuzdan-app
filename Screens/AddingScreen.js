@@ -10,7 +10,7 @@ import{
 
 } from "react-native";
 import { TextInput,Button } from 'react-native-paper';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import {SLR} from "ml-regression";
 import * as SQLite from "expo-sqlite";
 
 import * as firebase from 'firebase';

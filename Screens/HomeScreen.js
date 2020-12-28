@@ -12,7 +12,7 @@ import {VictoryChart,VictoryLine} from "victory-native";
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-react-native';
 import * as firebase from "firebase";
-import { interpolate } from "react-native-reanimated";
+import {SLR} from "ml-regression";
 
 export default class Home extends React.Component{
     constructor(props){
@@ -29,6 +29,7 @@ export default class Home extends React.Component{
             {d:4,price :35},
             {d:5,price :40},
         ],
+        slr: [],
         showLoginModal:false,
     };
 
@@ -118,12 +119,12 @@ export default class Home extends React.Component{
     }
 
     cumulativeGraph(snapshot){
-        var purchased = [];
-        var currentDateofMonth;
-        var oldPrice = 0;
+        let purchased = [];
+        let currentDateofMonth;
+        let oldPrice = 0;
         const month = new Date(Date.now()); 
         const lengthOfMonth = new Date(month.getFullYear(),month.getMonth(),0).getDate();
-        for (var i = 0; i<lengthOfMonth;i++){
+        for (let i = 1; i<=lengthOfMonth;i++){
             purchased.push({
                 d:i,
                 price:0,
@@ -138,15 +139,35 @@ export default class Home extends React.Component{
             purchased[currentDateofMonth] = {price:oldPrice + parseFloat(value.price),d:currentDateofMonth}
         }
         oldPrice = 0;
-        for (var i = 0 ;i<purchased.length;i++){
+        for (let i = 0 ;i<purchased.length;i++){
             oldPrice += purchased[i].price
             purchased[i].price = oldPrice;
         }
-        console.log(oldPrice);
         this.updateGraphs(purchased);
+        this.plotSlr(purchased);
         
     }
-
+    plotSlr(purchased){
+        let inputs = [];
+        let outputs = [];
+        for (let element of purchased ){
+            inputs.push(element.d);
+            outputs.push(element.price);
+        }
+        let slr = new SLR(inputs,outputs);
+        let slrPlot = [];
+        const month = new Date(Date.now()); 
+        const lengthOfMonth = new Date(month.getFullYear(),month.getMonth(),0).getDate();
+        for (let i = 1;i<=lengthOfMonth;i++){
+            slrPlot.push({
+                d:i,
+                price:slr.predict(i)
+            });
+        }
+        slrPlot = slrPlot.filter(x => x.price > 0);
+        console.log(slrPlot)
+        this.setState({slr:slrPlot});
+    }
     updateGraphs(purchased){
         this.setState({graphsData:purchased}); 
     }
@@ -157,13 +178,14 @@ export default class Home extends React.Component{
 
     render(){
         const {navigation : {navigate}} = this.props;
-        const {graphsData} = this.state;
+        const {slr,graphsData} = this.state;
         const month = new Date(Date.now()); 
         const lengthOfMonth = new Date(month.getFullYear(),month.getMonth(),0).getDate();
         return(
             <View style={styles.container}>
                 <VictoryChart  domain={{x:[0, lengthOfMonth ]}}>
-                    <VictoryLine data = {graphsData} x="d" y = "price"/>
+                    <VictoryLine data = {graphsData} x = "d" y = "price"></VictoryLine>
+                    <VictoryLine style={{data: { stroke: "#c43a31" },}} data = {slr} x="d" y = "price"></VictoryLine>
                 </VictoryChart>
                 <Button mode="contained" onPress= {()=>navigate("Adding")}>Ekle</Button>
                 <Button mode="contained" onPress= {()=>navigate("CategoryAdding")}>Kategori Ekle</Button>
