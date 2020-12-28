@@ -5,10 +5,11 @@ import {
     View,
     Text,
     FlatList,
-    TouchableOpacity,
+    ScrollView
 } from "react-native";
-
+import {List,Button} from "react-native-paper";
 import * as firebase from "firebase";
+import { FontAwesome5 } from '@expo/vector-icons';
 import store from "../store";
 export default class CategorySelectingScreen extends React.Component{
     state = {
@@ -30,18 +31,31 @@ export default class CategorySelectingScreen extends React.Component{
         store.setState({categoryName:name})
         navigation.goBack();
     }
+    categoryItems(item,index){
+        return (
 
+                
+            <List.Item
+            style={{paddingVertical:30,}}
+            onPress={()=> this.changeCategory(item.name)}
+            title={item.name}
+            left = {props => <List.Icon {...props} icon="folder" />}
+            />
+
+        )
+    }
     render(){
         return(
-            <View key={"categoryList"} style={styles.container}>
-                <FlatList style={{flex:1,}} data={this.state.categories} renderItem={({item,index}) => (
-                    <View key = {index} style={{flex:1,marginVertical:30,} }>
-                        <TouchableOpacity style={{padding:10,}} onPress={()=> this.changeCategory(item.name)}>
-                            <Text>{item.name}</Text>
-                        </TouchableOpacity>
-                    </View>
-                )}></FlatList>
-            </View>
+            <List.Section>
+
+                <FlatList 
+                data={this.state.categories}
+                renderItem={({item,index}) => this.categoryItems(item,index)}
+                keyExtractor={(item, index) => index.toString()}
+
+                />
+
+            </List.Section>
         );
     }
 }

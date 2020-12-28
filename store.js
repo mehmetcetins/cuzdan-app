@@ -1,5 +1,5 @@
 let state = {
-    categoryName:"",
+    categoryName:"Kategori Seçiniz",
 }
 const listeners = [];
 export default {

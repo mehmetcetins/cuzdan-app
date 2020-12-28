@@ -7,55 +7,18 @@ import{
     
    
     ScrollView,
-    Text,
-    TouchableOpacity,
+
 } from "react-native";
 import { TextInput,Button } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as SQLite from "expo-sqlite";
-import * as FirebaseCore from 'expo-firebase-core';
+
 import * as firebase from 'firebase';
 import ProductList from "../components/productList";
 import store from "../store";
 
-
-var db = SQLite.openDatabase("test.db");
 export default class AddingScreen extends React.Component{
 
-    constructor(props){
-        super(props);
-        /*db.transaction((txn)=>{
-            txn.executeSql("DROP TABLE  boughts;",
-            [],
-                ()=>{
-                    console.log("tablo silindi.");
-                },
-                ()=>{
-                    console.log("tablo silmede hata yasandı.");
-                }
-                
-            );
-        });
-        
-       */
-      /*
-        db.transaction((txn) => {
-            txn.executeSql(
-                "CREATE TABLE IF NOT EXISTS boughts ( id INTEGER PRIMARY KEY AUTOINCREMENT, name VARCHAR(100) NOT NULL, price REAL NOT NULL,quantity REAL NOT NULL, date TEXT  );",
-                [],
-                ()=>{
-                    console.log("tablo olusturuldu.");
-                },
-                ()=>{
-                    console.log("tablo olusturmada hata yasandı.");
-                }
-                
-            )
-        
-        });*/
-
-        
-    };
 
 
     state = {
@@ -66,33 +29,20 @@ export default class AddingScreen extends React.Component{
         date : null,
         categoryName:'',
     };
+
+    
     async addBought(){
         const {name,price,quantity,categoryName} = this.state;
 
         
-        /*db.transaction((txn)=>{
-            txn.executeSql("INSERT INTO boughts (name, price, quantity , date)  values(?,?,?,datetime('now'))",[name,price,quantity],()=>{
-                console.log("basarıyla kaydedildi.")
-            });
-        });
-        
-        /*await userBoughtRef.child(firebase.auth().currentUser.uid).once('value',
-            (snapshot) => {
-                if (snapshot.val() !== null){
-                    //console.log("var")
-                }
-                else{
-                    //userBoughtRef.push(firebase.auth().currentUser.uid)
-                }
-            }
-        )*/
+       
         let userBoughtRef = firebase.database().ref("boughts");
         userBoughtRef = userBoughtRef.child(firebase.auth().currentUser.uid);
         userBoughtRef.push({
             name: name,
             price: price,
             quantity:quantity,
-            date: Date(Date.now()),
+            date: Date.now(),
             categoryName:categoryName,
         }).catch((error)=>{
             console.log(error)
@@ -101,45 +51,24 @@ export default class AddingScreen extends React.Component{
     }
 
     boughtList(){
-        /*
-        db.transaction((txn)=>{
-            txn.executeSql("SELECT *,datetime(date) FROM boughts",[],
-                (_,{rows:{_array}})=>{
-                    var allBoughts = [];
-                    for(let i = 0 ; i<_array.length;i++){
-                        
-                        allBoughts.push({
-                            
-                                key:i,
-                                name:_array[i].name,
-                                price:_array[i].price,
-                                quantity:_array[i].quantity,
-                                date:_array[i].date,
-                            
-                        }
-                            
-                        );
-                    }
-                    this.setState({items:allBoughts});
-                }
-            );
-        });*/
-
+       
         const database = firebase.database();
         const products = database.ref("boughts").child(firebase.auth().currentUser.uid).on('value',(snapshot) => {
-            var allBoughts = [];
-            for (const [key,value] of Object.entries(snapshot.val())){
-                allBoughts.push({
-                    key : key,
-                    name: value.name,
-                    price : value.price,
-                    quantity: value.quantity,
-                    date: value.date,
-                })
-                
+            if(snapshot.exists()){
+                var allBoughts = [];
+                for (const [key,value] of Object.entries(snapshot.val())){
+                    allBoughts.push({
+                        key : key,
+                        name: value.name,
+                        price : value.price,
+                        quantity: value.quantity,
+                        date: new Date(value.date).toLocaleDateString("tr-TR"),
+                    })
+                    
+                }
+                this.setState({items:allBoughts});
+                //console.log(allBoughts);
             }
-            this.setState({items:allBoughts});
-            //console.log(allBoughts);
         });
         
     }
@@ -178,7 +107,7 @@ export default class AddingScreen extends React.Component{
                     <TextInput label="Ürün Adı" onChangeText={(name) => this.nameChanged(name)}></TextInput>
                     <TextInput  label = "Fiyatı" keyboardType="number-pad" onChangeText={(price) => this.priceChanged(price)} ></TextInput>
                     <TextInput  label = "Adeti" keyboardType="number-pad" onChangeText={(quantity) => this.quantityChanged(quantity)} ></TextInput>
-                    <Button mode="outlined" compact={true} onPress={()=> navigate('CategorySelecting')}>
+                    <Button contentStyle={styles.categoryButton} mode="outlined" compact={true} onPress={()=> navigate('CategorySelecting')}>
                         {store.getState().categoryName}
                     </Button>
                 </View>
@@ -196,6 +125,9 @@ const styles = StyleSheet.create({
         flex:1,
         padding:10
     },
+    categoryButton:{
+        paddingVertical:20,
+    }, 
     addingInputs:{
         borderWidth:1,
         borderColor:"grey",

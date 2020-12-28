@@ -113,7 +113,7 @@ export default class Home extends React.Component{
                     var purchased = [];
                     var currentDateofMonth;
                     var oldPrice;
-                    for (var i = 0; i<30;i++){
+                    for (var i = 0; i<new Date().getDate();i++){
                         purchased.push({
                             d:i,
                             price:0,
@@ -124,7 +124,7 @@ export default class Home extends React.Component{
 
                         for (const[key,value] of Object.entries(snapshot.val())){
                             oldPrice = 0;
-                            currentDateofMonth = new Date(Date.parse(value.date)).getDate()
+                            currentDateofMonth = new Date(value.date).getDate()
 
                             oldPrice = purchased[currentDateofMonth].price
                             
@@ -132,11 +132,15 @@ export default class Home extends React.Component{
                         }
                     }
                     //console.log(purchased);
-                    this.setState({graphsData:purchased}); 
+                    this.updateGraphs(purchased);
                 }
             }
         );
 
+    }
+
+    updateGraphs(purchased){
+        this.setState({graphsData:purchased}); 
     }
 
     logout(){
@@ -144,21 +148,13 @@ export default class Home extends React.Component{
     }
 
     render(){
-        let dummyData=[
-            {d:1,price :50},
-            {d:2,price :10},
-            {d:3,price :30},
-            {d:4,price :35},
-            {d:5,price :40},
-        ]
-        
         const {navigation : {navigate}} = this.props;
         const {graphsData} = this.state;
-
-        
+        const month = new Date(Date.now()); 
+        const lengthOfMonth = new Date(month.getFullYear(),month.getMonth(),0).getDate();
         return(
             <View style={styles.container}>
-                <VictoryChart>
+                <VictoryChart  domain={{x:[0, lengthOfMonth ]}}>
                     <VictoryLine data = {graphsData} x="d" y = "price"/>
                 </VictoryChart>
                 <Button mode="contained" onPress= {()=>navigate("Adding")}>Ekle</Button>

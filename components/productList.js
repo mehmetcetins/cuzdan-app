@@ -4,19 +4,29 @@ import {
     View,
     FlatList,
 } from "react-native";
+import { List } from 'react-native-paper';
 import ProductListItem from "./productListItem";
 export default class ProductList extends React.Component{
     render(){
         const {products} = this.props;
         return(
-            <View key={"productlist"}>
-                {products.map((value,_) => {
+            <List.Section>
+               {
+                products.map((value,_) => {
                     //console.log(value)
                     return <ProductListItem product={value}/>
                 })
                 }
-                
-            </View>
+            </List.Section>
         );
     }
 }
+
+
+/*
+<View key={"productlist"}>
+                
+                
+                
+            </View>
+*/

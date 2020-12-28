@@ -76,6 +76,7 @@ export default class LoginScreen extends React.Component{
         )
         .catch(
             (error)=>{
+                this.closeLoading();
                 this.setState({error:error});
             }
         );
@@ -95,6 +96,7 @@ export default class LoginScreen extends React.Component{
         .catch(
             (error)=>{
                 console.log(error.message)
+                this.closeLoading();
                 this.setState({error:error});
             }
         )
