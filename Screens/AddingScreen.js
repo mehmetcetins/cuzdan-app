@@ -10,14 +10,11 @@ import{
 
 } from "react-native";
 import { TextInput,Button } from 'react-native-paper';
-import {SLR} from "ml-regression";
-import * as SQLite from "expo-sqlite";
-
 import * as firebase from 'firebase';
 import ProductList from "../components/productList";
-import store from "../store";
 
-export default class AddingScreen extends React.Component{
+import { connect } from 'react-redux';
+class AddingScreen extends React.Component{
 
 
 
@@ -27,13 +24,12 @@ export default class AddingScreen extends React.Component{
         quantity:'',
         items: [],
         date : null,
-        categoryName:'',
     };
 
     
     async addBought(){
-        const {name,price,quantity,categoryName} = this.state;
-
+        const {name,price,quantity} = this.state;
+        const {categoryName} = this.props;
         
        
         let userBoughtRef = firebase.database().ref("boughts");
@@ -53,7 +49,7 @@ export default class AddingScreen extends React.Component{
     boughtList(){
        
         const database = firebase.database();
-        const products = database.ref("boughts").child(firebase.auth().currentUser.uid).on('value',(snapshot) => {
+        database.ref("boughts").child(firebase.auth().currentUser.uid).on('value',(snapshot) => {
             if(snapshot.exists()){
                 var allBoughts = [];
                 for (const [key,value] of Object.entries(snapshot.val())){
@@ -88,18 +84,14 @@ export default class AddingScreen extends React.Component{
     componentDidMount(){
         //console.log(FirebaseCore.DEFAULT_APP_OPTIONS);
         this.boughtList();
-        this.unsubscribe = store.onChange(()=>{
-            this.setState({
-                categoryName:store.getState().categoryName,
-            })
-        })
+       
     }
     componentWillUnmount(){
         this.unsubscribe();
     }
     render(){
         const {items,date} = this.state;
-        const {navigation:{navigate}} = this.props;
+        const {navigation:{navigate},categoryName} = this.props;
         //<DateTimePicker value = {date} mode= "date" display="default"></DateTimePicker>
         return (
             <View style={styles.container}>
@@ -108,7 +100,7 @@ export default class AddingScreen extends React.Component{
                     <TextInput  label = "Fiyatı" keyboardType="number-pad" onChangeText={(price) => this.priceChanged(price)} ></TextInput>
                     <TextInput  label = "Adeti" keyboardType="number-pad" onChangeText={(quantity) => this.quantityChanged(quantity)} ></TextInput>
                     <Button contentStyle={styles.categoryButton} mode="outlined" compact={true} onPress={()=> navigate('CategorySelecting')}>
-                        {store.getState().categoryName}
+                        {categoryName}
                     </Button>
                 </View>
                 <Button mode="contained" onPress={()=> this.addBought()}>EKLE</Button>
@@ -119,6 +111,14 @@ export default class AddingScreen extends React.Component{
         );
     }
 }
+const mapStateToProps = (state)=>{
+    console.log(state);
+    return {
+        categoryName: state.cuzdan.categoryName,
+    }
+}
+
+export default connect(mapStateToProps)(AddingScreen)
 
 const styles = StyleSheet.create({
     container:{

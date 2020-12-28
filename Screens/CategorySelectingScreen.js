@@ -2,23 +2,24 @@ import React from "react";
 
 import {
     StyleSheet,
-    View,
-    Text,
     FlatList,
-    ScrollView
 } from "react-native";
-import {List,Button} from "react-native-paper";
+import {List} from "react-native-paper";
+
 import * as firebase from "firebase";
-import { FontAwesome5 } from '@expo/vector-icons';
-import store from "../store";
-export default class CategorySelectingScreen extends React.Component{
+
+import { connect } from 'react-redux';
+import { selectCategory } from '../redux/actions';
+
+
+class CategorySelectingScreen extends React.Component{
     state = {
         categories:null,
     }
 
     componentDidMount(){
         const database = firebase.database();
-        const categories = database.ref("categories").once('value').then((snapshot) => {
+        database.ref("categories").once('value').then((snapshot) => {
             this.setState({categories:(Object.values(snapshot.val()))});
         });
         
@@ -27,8 +28,7 @@ export default class CategorySelectingScreen extends React.Component{
 
     changeCategory(name){
         const {navigation} = this.props;
-        console.log(name);
-        store.setState({categoryName:name})
+        this.props.selectCategory(name)
         navigation.goBack();
     }
     categoryItems(item,index){
@@ -68,3 +68,9 @@ const styles = StyleSheet.create({
         alignItems:'center',
     }
 })
+const mapStateToProps = (state) => {
+    return {}
+}
+const mapDispatchToProps = {selectCategory};
+
+export default connect(mapStateToProps,mapDispatchToProps)(CategorySelectingScreen)
