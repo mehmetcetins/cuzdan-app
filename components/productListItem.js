@@ -11,8 +11,8 @@ export default class ProductListItem extends React.Component {
         const {product:{key,name,price,quantity,date}} = this.props;
         return (
            <List.Item 
-            title = {name + " " + price +"TL "+ " " + quantity + " Adet"}
-            description={date }
+            title = {name }
+            description={date + " " + price +"TL "}
            />
         );
     }

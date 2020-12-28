@@ -25,6 +25,7 @@ export default class TabTest extends React.Component{
         items:[],
         frequency:[],
         percent:[],
+        categoires: [],
     }
     setItems(results){
         data = [];
@@ -75,11 +76,12 @@ export default class TabTest extends React.Component{
     }
 
     percentGraph(entries){
-        var categoryName = "";
-        var categoryPrice = 0.0;
-        var sumOfAll = 0;
-        var isThere = false;
-        var percentList = [];
+        let categoryName = "";
+        let categoryPrice = 0.0;
+        let sumOfAll = 0;
+        let isThere = false;
+        let percentList = [];
+
         for (const [key,value] of entries){
             categoryName = value.categoryName;
             categoryPrice = parseFloat(value.price);
@@ -98,7 +100,7 @@ export default class TabTest extends React.Component{
                         categoryPrice += parseFloat(searchValue.price);
                     }
                 }
-
+                
                 sumOfAll += categoryPrice;
                 percentList.push({category:categoryName,percent:categoryPrice})
             }

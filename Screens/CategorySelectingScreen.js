@@ -39,7 +39,7 @@ export default class CategorySelectingScreen extends React.Component{
             style={{paddingVertical:30,}}
             onPress={()=> this.changeCategory(item.name)}
             title={item.name}
-            left = {props => <List.Icon {...props} icon="folder" />}
+            left = {props => <List.Icon {...props} icon={item.icon} />}
             />
 
         )
