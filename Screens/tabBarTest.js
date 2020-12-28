@@ -18,7 +18,10 @@ import { ScrollView } from "react-native-gesture-handler";
 import { data } from "@tensorflow/tfjs";
 import PieIcons from "../components/PieIcons";
 
-export default class TabTest extends React.Component{
+import { connect } from 'react-redux';
+import { listBoughts } from '../redux/actions';
+
+class TabTest extends React.Component{
 
     state = {
         showModal:false,
@@ -115,13 +118,16 @@ export default class TabTest extends React.Component{
         this.setState({percent:percentList})
     }
 
-    componentDidMount(){
+    componentDidMount(){/*
         const database = firebase.database();
         database.ref("boughts").child(firebase.auth().currentUser.uid).on("value",(snapshot) => {
             var entries = Object.entries(snapshot.val());
             this.frequencyGraph(entries);
             this.percentGraph(entries);
-        });
+        });*/
+        const entries = Object.entries(this.props.items)
+        this.frequencyGraph(entries);
+        this.percentGraph(entries);
     }
 
     
@@ -149,6 +155,16 @@ export default class TabTest extends React.Component{
         );
     }
 }
+
+
+const mapStateToProps = (state)=>{
+    //console.log(state);
+    return {
+        items:state.cuzdan.allBoughts,
+    }
+}
+
+export default connect(mapStateToProps)(TabTest)
 
 const styles = StyleSheet.create({
     container:{

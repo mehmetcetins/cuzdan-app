@@ -14,7 +14,10 @@ import '@tensorflow/tfjs-react-native';
 import * as firebase from "firebase";
 import {SLR} from "ml-regression";
 
-export default class Home extends React.Component{
+import { connect } from 'react-redux';
+import { listBoughts } from '../redux/actions';
+
+class Home extends React.Component{
     constructor(props){
         super(props);
         
@@ -108,14 +111,16 @@ export default class Home extends React.Component{
         
         //firebase.auth().signOut();
 
-
+        /*
         const boughtList = firebase.database().ref("boughts").child(firebase.auth().currentUser.uid).on('value',
             (snapshot) => {
                 if(snapshot.exists()){
                    this.cumulativeGraph(snapshot);
                 }
             }
-        );
+        );*/
+
+        this.cumulativeGraph(this.props.items);
 
     }
 
@@ -200,7 +205,14 @@ export default class Home extends React.Component{
         );
     }
 }
+const mapStateToProps = (state)=>{
+    //console.log(state);
+    return {
+        items:state.cuzdan.allBoughts,
+    }
+}
 
+export default connect(mapStateToProps)(Home)
 const styles = StyleSheet.create({
     container: {
       flex: 1,

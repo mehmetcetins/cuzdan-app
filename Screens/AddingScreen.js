@@ -13,7 +13,9 @@ import { TextInput,Button } from 'react-native-paper';
 import * as firebase from 'firebase';
 import ProductList from "../components/productList";
 
+
 import { connect } from 'react-redux';
+import { addBoughts,listBoughts } from '../redux/actions';
 class AddingScreen extends React.Component{
 
 
@@ -22,7 +24,7 @@ class AddingScreen extends React.Component{
         name:'',
         price:'',
         quantity:'',
-        items: [],
+        //items: [],
         date : null,
     };
 
@@ -31,19 +33,9 @@ class AddingScreen extends React.Component{
         const {name,price,quantity} = this.state;
         const {categoryName} = this.props;
         
+        this.props.addBoughts({name,price,quantity,categoryName});
        
-        let userBoughtRef = firebase.database().ref("boughts");
-        userBoughtRef = userBoughtRef.child(firebase.auth().currentUser.uid);
-        userBoughtRef.push({
-            name: name,
-            price: price,
-            quantity:quantity,
-            date: Date.now(),
-            categoryName:categoryName,
-        }).catch((error)=>{
-            console.log(error)
-        });
-        this.boughtList();
+        //this.boughtList();
     }
 
     boughtList(){
@@ -83,15 +75,16 @@ class AddingScreen extends React.Component{
 
     componentDidMount(){
         //console.log(FirebaseCore.DEFAULT_APP_OPTIONS);
-        this.boughtList();
+        //this.boughtList();
+        this.props.listBoughts();
        
     }
     componentWillUnmount(){
-        this.unsubscribe();
+        //this.unsubscribe();
     }
     render(){
-        const {items,date} = this.state;
-        const {navigation:{navigate},categoryName} = this.props;
+        const {date} = this.state;
+        const {navigation:{navigate},categoryName,items} = this.props;
         //<DateTimePicker value = {date} mode= "date" display="default"></DateTimePicker>
         return (
             <View style={styles.container}>
@@ -111,14 +104,18 @@ class AddingScreen extends React.Component{
         );
     }
 }
+/*
+*/
 const mapStateToProps = (state)=>{
-    console.log(state);
+    //console.log(state);
     return {
         categoryName: state.cuzdan.categoryName,
+        items:state.cuzdan.allBoughts,
     }
 }
+const mapDispatchToProps = {addBoughts,listBoughts}
 
-export default connect(mapStateToProps)(AddingScreen)
+export default connect(mapStateToProps,mapDispatchToProps)(AddingScreen)
 
 const styles = StyleSheet.create({
     container:{
