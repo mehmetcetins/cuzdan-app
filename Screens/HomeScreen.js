@@ -110,33 +110,41 @@ export default class Home extends React.Component{
         const boughtList = firebase.database().ref("boughts").child(firebase.auth().currentUser.uid).on('value',
             (snapshot) => {
                 if(snapshot.exists()){
-                    var purchased = [];
-                    var currentDateofMonth;
-                    var oldPrice;
-                    for (var i = 0; i<new Date().getDate();i++){
-                        purchased.push({
-                            d:i,
-                            price:0,
-                        });
-                    };
-
-                    if(snapshot.val()){
-
-                        for (const[key,value] of Object.entries(snapshot.val())){
-                            oldPrice = 0;
-                            currentDateofMonth = new Date(value.date).getDate()
-
-                            oldPrice = purchased[currentDateofMonth].price
-                            
-                            purchased[currentDateofMonth] = {price:oldPrice+parseFloat(value.price),d:currentDateofMonth}
-                        }
-                    }
-                    //console.log(purchased);
-                    this.updateGraphs(purchased);
+                   this.cumulativeGraph(snapshot);
                 }
             }
         );
 
+    }
+
+    cumulativeGraph(snapshot){
+        var purchased = [];
+        var currentDateofMonth;
+        var oldPrice = 0;
+        const month = new Date(Date.now()); 
+        const lengthOfMonth = new Date(month.getFullYear(),month.getMonth(),0).getDate();
+        for (var i = 0; i<lengthOfMonth;i++){
+            purchased.push({
+                d:i,
+                price:0,
+            });
+        };
+        
+        for (const[key,value] of Object.entries(snapshot.val())){
+            currentDateofMonth = new Date(value.date).getDate()
+
+            oldPrice = purchased[currentDateofMonth].price 
+            
+            purchased[currentDateofMonth] = {price:oldPrice + parseFloat(value.price),d:currentDateofMonth}
+        }
+        oldPrice = 0;
+        for (var i = 0 ;i<purchased.length;i++){
+            oldPrice += purchased[i].price
+            purchased[i].price = oldPrice;
+        }
+        console.log(oldPrice);
+        this.updateGraphs(purchased);
+        
     }
 
     updateGraphs(purchased){

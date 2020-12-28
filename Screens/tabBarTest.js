@@ -45,6 +45,7 @@ export default class TabTest extends React.Component{
         var productName = "";
         var isThere = false;
         var quantityFreqList = [];
+        var mean = 0;
         for (const [key,value] of entries ){
             productName = value.name;
             quantitySum = parseFloat(value.quantity);
@@ -60,12 +61,16 @@ export default class TabTest extends React.Component{
                 for(const [searchKey,searchValue] of entries){
                     if(searchKey !== key && searchValue.name === productName){
                         quantitySum += parseFloat(searchValue.quantity);
+                       
                     }
                 }
+                mean+=quantitySum;
                 quantityFreqList.push({product:productName,amount:quantitySum});
             }
         }
-        //console.log(quantityFreqList);
+        mean = mean / quantityFreqList.length;
+        quantityFreqList = quantityFreqList.filter(x => x.amount > mean);
+
         this.setState({frequency:quantityFreqList});
     }
 
