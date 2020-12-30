@@ -9,6 +9,7 @@ const initialState = {
   categoryName : "Kategori Seçiniz",
   allBoughts: [],
   categories: [],
+  isEmpty:false,
 };
 
 export default function reducer(state = initialState, action) {
@@ -29,6 +30,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         allBoughts:action.payload.allBoughts,
+        isEmpty:action.payload.isEmpty,
       }
     }
     case SET_CATEGORIES:{

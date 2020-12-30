@@ -4,15 +4,20 @@ import React from "react";
 import{
     StyleSheet,
     View,
-    
     SafeAreaView,
-    ScrollView,
-
 } from "react-native";
-import { TextInput,Button } from 'react-native-paper';
+import { 
+    TextInput,
+    Button,
+    Colors,
+    Snackbar
+} from 'react-native-paper';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 import ProductList from "../components/productList";
 import { connect } from 'react-redux';
 import { addBoughts,listBoughts } from '../redux/actions';
+
 class AddingScreen extends React.Component{
 
 
@@ -22,16 +27,18 @@ class AddingScreen extends React.Component{
         price:'',
         quantity:'',
         //items: [],
-        date : null,
+        date : Date.now(),
+        showDatePicker:false,
+        snackBarVisible:false,
     };
 
     _isMounted = false;
     async addBought(){
-        const {name,price,quantity} = this.state;
+        const {name,price,quantity,date} = this.state;
         const {categoryName} = this.props;
-        
-        this.props.addBoughts({name,price,quantity,categoryName});
-        this.props.listBoughts();
+        this.setState({snackBarVisible:true});
+        //this.props.addBoughts({name,price,quantity,categoryName,date});
+        //this.props.listBoughts();
         //this.boughtList();
     }
 
@@ -72,7 +79,10 @@ class AddingScreen extends React.Component{
         if(this._isMounted)
             this.setState({quantity:newQuantity});
     }
-
+    toggleDatePickerModal(){
+        if(this._isMounted)
+            this.setState({showDatePicker:!this.state.showDatePicker})
+    }
     componentDidMount(){
         //console.log(FirebaseCore.DEFAULT_APP_OPTIONS);
         //this.boughtList();
@@ -85,18 +95,46 @@ class AddingScreen extends React.Component{
         this._isMounted = false;
     }
     render(){
-        const {date} = this.state;
+        const {date,showDatePicker,snackBarVisible,} = this.state;
         const {navigation:{navigate},categoryName,items} = this.props;
-        //<DateTimePicker value = {date} mode= "date" display="default"></DateTimePicker>
+        //
         return (
             <View style={styles.container}>
+                    <Snackbar
+                        visible={snackBarVisible}
+                        style= {{backgroundColor:Colors.green400}}
+                        onDismiss = {()=> {
+                          this.setState({snackBarVisible:false});  
+                        }}
+                        duration = {100}
+                        >
+                        Eklendi
+                    </Snackbar>
                 <View >
+               
                     <TextInput label="Ürün Adı" onChangeText={(name) => this.nameChanged(name)}></TextInput>
-                    <TextInput  label = "Fiyatı" keyboardType="number-pad" onChangeText={(price) => this.priceChanged(price)} ></TextInput>
-                    <TextInput  label = "Adeti" keyboardType="number-pad" onChangeText={(quantity) => this.quantityChanged(quantity)} ></TextInput>
+                    <TextInput  label = "Toplam Fiyat" keyboardType="number-pad" onChangeText={(price) => this.priceChanged(price)} ></TextInput>
+                    <TextInput  label = "Adet/Kilo" keyboardType="number-pad" onChangeText={(quantity) => this.quantityChanged(quantity)} ></TextInput>
+                    <Button contentStyle={styles.categoryButton} mode="outlined" onPress={()=> this.toggleDatePickerModal()}>
+                        {new Date(date).toLocaleDateString("tr-TR")}
+                    </Button>
                     <Button contentStyle={styles.categoryButton} mode="outlined" compact={true} onPress={()=> navigate('CategorySelecting')}>
                         {categoryName}
                     </Button>
+                    {showDatePicker && (
+                        <DateTimePicker value ={date} mode= "date" display="default" locale="tr-TR"
+                            onChange={(event,selectedDate)=>{
+                                this.toggleDatePickerModal();
+                                if(selectedDate){
+                                    this.setState({date:event.nativeEvent.timestamp})
+                                    
+                                }
+                                
+                            }}
+                        ></DateTimePicker>
+                    )}
+                    
+                    
                 </View>
                 <Button mode="contained" onPress={()=> this.addBought()}>EKLE</Button>
                 <SafeAreaView style={{flex:1,}}>
@@ -131,7 +169,10 @@ const styles = StyleSheet.create({
         padding:10
     },
     categoryButton:{
-        paddingVertical:20,
+        borderWidth:1,
+        borderColor:Colors.deepPurple900,
+        paddingVertical:15,
+        marginVertical:5,
     }, 
     addingInputs:{
         borderWidth:1,

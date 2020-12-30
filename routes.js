@@ -1,8 +1,9 @@
 import React from "react";
+import {Colors} from "react-native-paper"
 import {createAppContainer,createSwitchNavigator} from "react-navigation";
 import {createStackNavigator} from "react-navigation-stack";
 import {createBottomTabNavigator} from "react-navigation-tabs";
-import {MaterialIcons} from "react-native-vector-icons";
+import {MaterialCommunityIcons} from "react-native-vector-icons";
 
 import MyScreen from "./screens/MyScreen";
 import Home from "./screens/HomeScreen";
@@ -13,7 +14,7 @@ import CategoryAddingScreen from "./screens/CategoryAddingScreen";
 import CategorySelectingScreen from "./screens/CategorySelectingScreen";
 
 const getTabBarIcon = icon => ({ tintColor }) => (
-    <MaterialIcons name={icon} size={26} style={{ color: tintColor }} />
+    <MaterialCommunityIcons name={icon} size={26} style={{ color: tintColor }} />
   );
 const HomeScreens = createStackNavigator(
     {
@@ -54,7 +55,7 @@ const TabBarTest = createBottomTabNavigator(
         Test : {
             screen: TabTest,
             navigationOptions:{
-                tabBarIcon: getTabBarIcon("assessment"),
+                tabBarIcon: getTabBarIcon("scale-balance"),
                 
             },
         },
@@ -63,6 +64,7 @@ const TabBarTest = createBottomTabNavigator(
         initialRouteName:'Home',
         tabBarPosition: "Bottom",
         tabBarOptions:{
+            activeTintColor:Colors.deepPurpleA700,
             showLabel:false,
         }
     }

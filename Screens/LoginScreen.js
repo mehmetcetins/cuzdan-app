@@ -6,9 +6,12 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    ActivityIndicator,
+    Dimensions,
 } from "react-native";
-import {Dimensions} from "react-native";
+import {
+    ActivityIndicator,
+    Colors
+} from "react-native-paper"
 import * as firebase from "firebase";
 export default class LoginScreen extends React.Component{
     
@@ -126,7 +129,7 @@ export default class LoginScreen extends React.Component{
                     <Text style={{width:Dimensions.get("screen").width-40,fontSize:18}}>{error.message}</Text>
                 )}
                 
-                <ActivityIndicator size="large" color='#999999' animating={loading}/>
+                <ActivityIndicator size="large" color={Colors.red800} animating={loading}/>
                 {!loading && (
                     <View>
                         <TextInput 

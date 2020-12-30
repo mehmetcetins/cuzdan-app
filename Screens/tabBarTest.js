@@ -4,22 +4,25 @@ import {
     StyleSheet,
     View,
     Text,
+    SafeAreaView,
 
 } from "react-native";
-
+import {
+    Card
+} from "react-native-paper";
 import {
     VictoryChart,
     VictoryBar,
     VictoryPie,
     VictoryTheme
 } from "victory-native";
-import * as firebase from "firebase";
+import { StatusBar } from 'expo-status-bar';
 import { ScrollView } from "react-native-gesture-handler";
 import { data } from "@tensorflow/tfjs";
 import PieIcons from "../components/PieIcons";
 
 import { connect } from 'react-redux';
-import { listBoughts } from '../redux/actions';
+
 
 class TabTest extends React.Component{
 
@@ -27,8 +30,18 @@ class TabTest extends React.Component{
         showModal:false,
         items:[],
         frequency:[],
-        percent:[],
+        percent:[
+            {
+                category:"Alışveriş",
+                percent:50,
+            },
+            {
+                category:"Ulaşım",
+                percent:50,
+            }
+        ],
         categoires: [],
+        mean:0,
     }
     _isMounted = false;
     setItems(results){
@@ -75,9 +88,9 @@ class TabTest extends React.Component{
             }
         }
         mean = mean / quantityFreqList.length;
-        quantityFreqList = quantityFreqList.filter(x => x.amount > mean);
+        quantityFreqList = quantityFreqList.filter(x => x.amount >= mean);
         if(this._isMounted)
-            this.setState({frequency:quantityFreqList});
+            this.setState({frequency:quantityFreqList,mean:mean});
     }
 
     percentGraph(entries){
@@ -143,27 +156,50 @@ class TabTest extends React.Component{
     componentWillUnmount(){
         this._isMounted=false;
     }
-    
+    componentDidUpdate(prevProps){
+        if(this.props.items != prevProps.items){
+            const entries = Object.entries(this.props.items)
+            this.frequencyGraph(entries);
+            this.percentGraph(entries);
+        }
+    }
     render(){
-        const {percent,frequency} = this.state;
+        const {percent,frequency,mean} = this.state;
 
         return (
             <View style={styles.container}>
+                
                 <ScrollView>
-                    <View style={{flex:1}}>
-                        <VictoryChart theme={VictoryTheme.material} domainPadding={30}>
-                            <VictoryBar data={frequency} x = 'product' y = 'amount' y0="0" ></VictoryBar>
-                            
-                        </VictoryChart>
-
-                        <VictoryPie 
-                            theme={VictoryTheme.material} 
-                            data = {percent} 
-                            x= "category" y = "percent"
-                            labelComponent={<PieIcons/>}
-                         ></VictoryPie>
-                    </View>
+                    
+                    
+                    <Card elevation={10}>
+                        
+                        <Card.Content style={styles.cardContent}>
+                            <VictoryChart theme={VictoryTheme.material} domainPadding={30}  >
+                                <VictoryBar data={frequency} x = 'product' y = 'amount' y0="0" ></VictoryBar>
+                                
+                            </VictoryChart>
+                            <Card.Title title="Adet/Kilo Sıklık Grafiği" subtitle={"Ortalamanın Altındakiler Gösterilmez. Ortalama : "+ mean}/>
+                        </Card.Content>
+                       
+                    </Card>
+                    <Card elevation={5} >
+                        <Card.Content style={styles.cardContent}>
+                            <VictoryPie 
+                                theme={VictoryTheme.material} 
+                                
+                                data = {percent} 
+                                x= "category" y = "percent"
+                                labelComponent={<PieIcons/>}
+                                
+                            ></VictoryPie>
+                        <Card.Title title="Pasta Grafiği" subtitle="Kategorilere Göre Harcanan Para "/>
+                        </Card.Content>
+                       
+                    </Card>
+                    
                 </ScrollView>
+               
             </View>
         );
     }
@@ -181,6 +217,9 @@ const mapStateToProps = (state)=>{
 export default connect(mapStateToProps)(TabTest)
 
 const styles = StyleSheet.create({
+    cardContent:{
+        left:-15,
+    },
     container:{
         flex:1,
         justifyContent:"center",

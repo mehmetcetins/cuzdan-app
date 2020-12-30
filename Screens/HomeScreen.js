@@ -3,9 +3,14 @@ import {
     StyleSheet,
     View,
     SafeAreaView,
+    Dimensions,
 } from "react-native";
 import { 
-    Button 
+    Button,
+    ActivityIndicator,
+    Colors,
+    Card,
+    IconButton
 } from 'react-native-paper';
 import {
     VictoryChart,
@@ -121,33 +126,62 @@ class Home extends React.Component{
 
     render(){
         //this.props.listBoughts();
-        const {navigation : {navigate},items} = this.props;
+        const {navigation : {navigate},items,isEmpty} = this.props;
         const {slr,graphsData} = this.state;
-        const month = new Date(Date.now()); 
-        const lengthOfMonth = new Date(month.getFullYear(),month.getMonth(),0).getDate();
+        //const month = new Date(Date.now()); 
+        //const lengthOfMonth = new Date(month.getFullYear(),month.getMonth(),).getDate();
+        //console.log(lengthOfMonth)
+        
         return(
             <View style={styles.container}>
-                <VictoryChart  domain={{x:[0, lengthOfMonth ]}}>
-                    <VictoryLine data = {graphsData} x = "d" y = "price"></VictoryLine>
-                    <VictoryLine style={{data: { stroke: "#c43a31" },}} data = {slr} x="d" y = "price"></VictoryLine>
-                </VictoryChart>
-                <Button mode="contained" onPress= {()=>navigate("Adding")}>Ekle</Button>
                 
-                <Button mode="contained"  onPress= {()=>this.logout()}>Çıkış</Button>
                 
-                <SafeAreaView style={{flex:1,width:300,}}>
-                    <ProductList products={items}/>
-                </SafeAreaView>
+                <Card style={{flex:1}} elevation={10}>
+                    <Card.Content >
+                    
+                        <VictoryChart  domain={{x:[0, 31 ]}} >
+                            <VictoryLine data = {graphsData} x = "d" y = "price" animate={{duration:200,}}></VictoryLine>
+                            <VictoryLine style={{data: { stroke: "#c43a31" },}} data = {slr} x="d" y = "price"></VictoryLine>
+                        </VictoryChart>
+                        <Card.Title title="Kümülatif Grafik" />
+                    </Card.Content>
+                   
+                </Card>
+                
+               
+                <Card style={{flex:1}}  elevation={5}>
+                        <IconButton 
+                            icon="plus-circle"
+                            color={Colors.deepPurpleA700} 
+                            style={styles.addButton} 
+                            size={64}
+                            onPress= {()=>navigate("Adding")}
+                        />
+                    <Card.Content style={{flex:1,}}>
+                        
+                        <SafeAreaView style={{flex:1,width:Dimensions.get("screen").width,}}>
+                        
+                            
+                            {isEmpty  && (<ActivityIndicator style={{flex:1,justifyContent:'center'}} size="large" color={Colors.redA100} animating={true}/>)}
+                            <ProductList products = {items}/>
+                        </SafeAreaView>
+                    </Card.Content>
+                    <Button mode="contained"  onPress= {()=>this.logout()}>Çıkış</Button>
+                </Card>
                 
             </View>
         );
     }
 }
+/*
+<Button mode="contained" onPress= {()=>navigate("Adding")}>Ekle</Button>
+*/
 //<Button mode="contained" onPress= {()=>navigate("CategoryAdding")}>Kategori Ekle</Button>
 const mapStateToProps = (state)=>{
     //console.log(state);
     return {
         items:state.cuzdan.allBoughts,
+        isEmpty : state.cuzdan.isEmpty,
     }
 }
 const mapDispatchToProps = (dispatch)=>{
@@ -159,11 +193,20 @@ const mapDispatchToProps = (dispatch)=>{
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Home)
 const styles = StyleSheet.create({
+    addButton:{
+        position:"absolute",
+        top:10,
+        right:50,
+        zIndex:99,
+        color:Colors.deepPurpleA100,
+
+    },  
     container: {
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'center',
+      
     },
   });
   
