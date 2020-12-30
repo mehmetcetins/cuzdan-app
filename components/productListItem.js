@@ -4,6 +4,7 @@ import {
     View,
     Text,
     StyleSheet,
+    
 } from "react-native";
 import { List } from 'react-native-paper';
 export default class ProductListItem extends React.Component {

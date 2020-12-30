@@ -11,12 +11,12 @@ export default class ProductList extends React.Component{
         const {products} = this.props;
         return(
             <List.Section>
-               {
-                products.map((value,_) => {
-                    //console.log(value)
-                    return <ProductListItem product={value}/>
-                })
-                }
+              <FlatList 
+                data={products}
+                renderItem={({item,index}) => <ProductListItem product={item}/>}
+                keyExtractor={(item, index) => index.toString()}
+              />
+
             </List.Section>
         );
     }
@@ -26,7 +26,12 @@ export default class ProductList extends React.Component{
 /*
 <View key={"productlist"}>
                 
-                
+                 {
+                products.map((value,_) => {
+                    //console.log(value)
+                    return <ProductListItem product={value}/>
+                })
+                }
                 
             </View>
 */

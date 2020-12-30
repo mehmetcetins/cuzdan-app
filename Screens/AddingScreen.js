@@ -5,7 +5,7 @@ import{
     StyleSheet,
     View,
     
-   
+    SafeAreaView,
     ScrollView,
 
 } from "react-native";
@@ -97,9 +97,9 @@ class AddingScreen extends React.Component{
                     </Button>
                 </View>
                 <Button mode="contained" onPress={()=> this.addBought()}>EKLE</Button>
-                <ScrollView>
+                <SafeAreaView style={{flex:1,}}>
                     <ProductList products={items}/>
-                </ScrollView>
+                </SafeAreaView>
             </View>
         );
     }

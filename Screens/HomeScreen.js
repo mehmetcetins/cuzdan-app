@@ -2,7 +2,7 @@ import React from "react";
 import {
     StyleSheet,
     View,
-    ScrollView,
+    SafeAreaView,
     Modal,
     Text,
 
@@ -210,9 +210,9 @@ class Home extends React.Component{
                 <Button mode="contained" onPress= {()=>navigate("CategoryAdding")}>Kategori Ekle</Button>
                 <Button mode="contained"  onPress= {()=>this.logout()}>Çıkış</Button>
                 
-                <ScrollView style={{width:300}}>
+                <SafeAreaView style={{flex:1,width:300,}}>
                     <ProductList products={items}/>
-                </ScrollView>
+                </SafeAreaView>
                 
             </View>
         );
