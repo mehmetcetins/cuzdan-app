@@ -79,3 +79,8 @@ export const addBoughts = ({name,price,quantity,categoryName}) => {
         payload:{}
     }
 }
+
+
+export const logout = ()=> {
+    firebase.auth().signOut();
+}

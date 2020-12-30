@@ -30,6 +30,7 @@ class TabTest extends React.Component{
         percent:[],
         categoires: [],
     }
+    _isMounted = false;
     setItems(results){
         data = [];
         for(let i = 0 ; i<results.length;i++){
@@ -40,7 +41,8 @@ class TabTest extends React.Component{
                 </View>
             );
         }
-        this.setState({items:data});
+        if(this._isMounted)
+            this.setState({items:data});
     }
 
     
@@ -74,8 +76,8 @@ class TabTest extends React.Component{
         }
         mean = mean / quantityFreqList.length;
         quantityFreqList = quantityFreqList.filter(x => x.amount > mean);
-
-        this.setState({frequency:quantityFreqList});
+        if(this._isMounted)
+            this.setState({frequency:quantityFreqList});
     }
 
     percentGraph(entries){
@@ -121,7 +123,8 @@ class TabTest extends React.Component{
         }
         
         //console.log(percentList);
-        this.setState({percent:percentList})
+        if(this._isMounted)
+            this.setState({percent:percentList})
     }
 
     componentDidMount(){/*
@@ -131,11 +134,15 @@ class TabTest extends React.Component{
             this.frequencyGraph(entries);
             this.percentGraph(entries);
         });*/
+        this._isMounted = true;
         const entries = Object.entries(this.props.items)
         this.frequencyGraph(entries);
         this.percentGraph(entries);
     }
 
+    componentWillUnmount(){
+        this._isMounted=false;
+    }
     
     render(){
         const {percent,frequency} = this.state;

@@ -25,12 +25,12 @@ const HomeScreens = createStackNavigator(
                 title: 'Yeni Ürün',
             }
         },
-        CategoryAdding: {
+        /*CategoryAdding: {
             screen : CategoryAddingScreen,
             navigationOptions:{
                 title: 'Yeni Kategori',
             }
-        },
+        },*/
         CategorySelecting:{
             screen:CategorySelectingScreen,
             navigationOptions:{

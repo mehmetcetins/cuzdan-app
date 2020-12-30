@@ -10,10 +10,7 @@ import{
 
 } from "react-native";
 import { TextInput,Button } from 'react-native-paper';
-import * as firebase from 'firebase';
 import ProductList from "../components/productList";
-
-
 import { connect } from 'react-redux';
 import { addBoughts,listBoughts } from '../redux/actions';
 class AddingScreen extends React.Component{
@@ -28,7 +25,7 @@ class AddingScreen extends React.Component{
         date : null,
     };
 
-    
+    _isMounted = false;
     async addBought(){
         const {name,price,quantity} = this.state;
         const {categoryName} = this.props;
@@ -54,7 +51,8 @@ class AddingScreen extends React.Component{
                     })
                     
                 }
-                this.setState({items:allBoughts});
+                if(this._isMounted)
+                    this.setState({items:allBoughts});
                 //console.log(allBoughts);
             }
         });
@@ -63,24 +61,28 @@ class AddingScreen extends React.Component{
 
     
     nameChanged(newName){
-
-        this.setState({name:newName})
+        if(this._isMounted)
+            this.setState({name:newName})
     }
     priceChanged(newPrice){
-        this.setState({price:newPrice});
+        if(this._isMounted)
+            this.setState({price:newPrice});
     }
     quantityChanged(newQuantity){
-        this.setState({quantity:newQuantity});
+        if(this._isMounted)
+            this.setState({quantity:newQuantity});
     }
 
     componentDidMount(){
         //console.log(FirebaseCore.DEFAULT_APP_OPTIONS);
         //this.boughtList();
+        this._isMounted= true;
         this.props.listBoughts();
        
     }
     componentWillUnmount(){
         //this.unsubscribe();
+        this._isMounted = false;
     }
     render(){
         const {date} = this.state;

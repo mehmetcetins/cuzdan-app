@@ -5,9 +5,6 @@ import {
     FlatList,
 } from "react-native";
 import {List} from "react-native-paper";
-
-import * as firebase from "firebase";
-
 import { connect } from 'react-redux';
 import { selectCategory } from '../redux/actions';
 
@@ -23,10 +20,10 @@ class CategorySelectingScreen extends React.Component{
 
                 
             <List.Item
-            style={{paddingVertical:30,}}
-            onPress={()=> this.changeCategory(item.name)}
-            title={item.name}
-            left = {props => <List.Icon {...props} icon={item.icon} />}
+                style={{paddingVertical:30,}}
+                onPress={()=> this.changeCategory(item.name)}
+                title={item.name}
+                left = {props => <List.Icon {...props} icon={item.icon} />}
             />
 
         )

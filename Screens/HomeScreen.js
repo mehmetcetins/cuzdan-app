@@ -3,25 +3,22 @@ import {
     StyleSheet,
     View,
     SafeAreaView,
-    Modal,
-    Text,
-
 } from "react-native";
-import { Button } from 'react-native-paper';
-import MyInput from "../components/myInput";
-import {VictoryChart,VictoryLine} from "victory-native";
-import * as tf from '@tensorflow/tfjs';
+import { 
+    Button 
+} from 'react-native-paper';
+import {
+    VictoryChart,
+    VictoryLine
+} from "victory-native";
 import '@tensorflow/tfjs-react-native';
-import * as firebase from "firebase";
 import {SLR} from "ml-regression";
 import ProductList from "../components/productList";
 import { connect } from 'react-redux';
-import {setCategories,listBoughts} from "../redux/actions";
+import {setCategories,listBoughts,logout} from "../redux/actions";
 
 class Home extends React.Component{
-    constructor(props){
-        super(props)
-    }
+    
     state={
         isTfReady: false,
         modelPredictions: [],
@@ -37,90 +34,10 @@ class Home extends React.Component{
         showLoginModal:false,
     };
 
-
-    randomInt(min,max){
-        return Math.floor(Math.random() * (max - min)) + min;
-    }
-
-    model;
-    async createModel(){
-        
-        values = [];
-        for (let i =0;i<60;i++){
-            values.push({d:i,price:this.randomInt(30,60)})
-        }
-        this.setState({graphsData:values});
-        const dummyData=this.state.graphsData
-        var inputs =[],outputs=[];
-        dummyData.map(data => inputs.push(data.d));
-        dummyData.map(data => outputs.push(data.price));
-        this.model.add(tf.layers.dense({units:16,useBias:true,inputShape:[1],activation:"relu6"}));
-        this.model.add(tf.layers.dense({units:1}));
-        this.model.compile({
-            optimizer:tf.train.sgd(0.001),
-            loss: "meanSquaredError",
-            metrics : [tf.metrics.meanAbsoluteError],
-        });
-        //console.log(inputs+ " "+outputs);
-        inputs = tf.tensor(inputs);
-        outputs = tf.tensor(outputs);
-        //console.log(inputs+ " "+outputs);
-        await this.model.fit(inputs,outputs,{
-            epochs:10,
-            batchSize:1,
-            validationSplit:0.7,
-            callbacks:{
-                onEpochEnd: async (epoch,log)=>{
-                    console.log(epoch);
-                    console.log(log);
-                }
-            }
-        });
-        let predictions =[];
-        for (let i =0 ;i<10;i++){
-            predictions.push(
-                {
-                    d: i+this.state.graphsData.length,
-                    price: this.model.predict( tf.tensor([i+this.state.graphsData.length]) ).dataSync()[0]
-                });
-        }
-        
-        this.setState({graphsData: this.state.graphsData.concat(predictions) });
-        //console.log(this.state.graphsData);
-    }
-    
-    kayitol(){
-        firebase.auth().createUserWithEmailAndPassword("mehmet.cetin14@ogr.sakarya.edu.tr","test123").catch((error)=>{
-            //console.log(error);
-        });
-    }
-
-    girisYap(){
-        firebase.auth().signInWithEmailAndPassword("mehmet.cetin14@ogr.sakarya.edu.tr","test123");
-    }
+    _isMounted = false;
+   
     componentDidMount(){
-        /*await tf.ready();
-        this.setState({isTfReady:true});
-
-        this.model = tf.sequential();
-        
-        this.createModel();*/
-        
-
-        //this.girisYap();
-        
-        //firebase.auth().signOut();
-
-        /*
-        const boughtList = firebase.database().ref("boughts").child(firebase.auth().currentUser.uid).on('value',
-            (snapshot) => {
-                if(snapshot.exists()){
-                   this.cumulativeGraph(snapshot);
-                }
-            }
-        );*/
-        //console.log(store)
-        
+        this._isMounted = true;
         this.props.setCategories();
         this.props.listBoughts();
     }
@@ -129,6 +46,9 @@ class Home extends React.Component{
             this.cumulativeGraph(this.props.items);
         }
         
+    }
+    componentWillUnmount(){
+        this._isMounted = false;
     }
 
     cumulativeGraph(snapshot){
@@ -163,6 +83,8 @@ class Home extends React.Component{
         this.updateGraphs(purchased);
         this.plotSlr(purchased);
         
+       
+        
     }
     plotSlr(purchased){
         let inputs = [];
@@ -183,15 +105,18 @@ class Home extends React.Component{
         }
         slrPlot = slrPlot.filter(x => x.price > 0);
         //console.log(slrPlot)
-        this.setState({slr:slrPlot});
-        this.setState({predictedTotalExpense:slrPlot[slrPlot.length-1]}) 
+        if(this._isMounted){
+            this.setState({slr:slrPlot});
+            this.setState({predictedTotalExpense:slrPlot[slrPlot.length-1]}) 
+        }
     }
     updateGraphs(purchased){
-        this.setState({graphsData:purchased}); 
+        if (this._isMounted)
+            this.setState({graphsData:purchased}); 
     }
 
     logout(){
-        firebase.auth().signOut();
+        this.props.logout();
     }
 
     render(){
@@ -207,7 +132,7 @@ class Home extends React.Component{
                     <VictoryLine style={{data: { stroke: "#c43a31" },}} data = {slr} x="d" y = "price"></VictoryLine>
                 </VictoryChart>
                 <Button mode="contained" onPress= {()=>navigate("Adding")}>Ekle</Button>
-                <Button mode="contained" onPress= {()=>navigate("CategoryAdding")}>Kategori Ekle</Button>
+                
                 <Button mode="contained"  onPress= {()=>this.logout()}>Çıkış</Button>
                 
                 <SafeAreaView style={{flex:1,width:300,}}>
@@ -218,7 +143,7 @@ class Home extends React.Component{
         );
     }
 }
-//<MyInput navigateFunc={navigate}></MyInput>
+//<Button mode="contained" onPress= {()=>navigate("CategoryAdding")}>Kategori Ekle</Button>
 const mapStateToProps = (state)=>{
     //console.log(state);
     return {
@@ -229,6 +154,7 @@ const mapDispatchToProps = (dispatch)=>{
     return {
         listBoughts:()=>listBoughts(dispatch),
         setCategories:()=>setCategories(dispatch),
+        logout :() => logout(),
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Home)

@@ -1,5 +1,4 @@
 import { SELECT_CATEGORY, ADD_BOUGHT, SET_CATEGORIES,LIST_BOUGHT } from "../actionTypes";
-import * as firebase from 'firebase';
 const initialState = {
   categoryName : "Kategori Seçiniz",
   allBoughts: [],
@@ -29,7 +28,7 @@ export default function reducer(state = initialState, action) {
     }
     case SET_CATEGORIES:{
      
-      console.log(action.payload.categories) 
+      //console.log(action.payload.categories) 
       return {
         ...state,
         categories:action.payload.categories,

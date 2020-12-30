@@ -19,8 +19,9 @@ export default class LoginScreen extends React.Component{
         loading:true,
         
     };
-
+    _isMounted = false;
     componentDidMount(){
+        this._isMounted = true;
         var firebaseConfig = {
             apiKey: "AIzaSyAaTnLART9qx_m9QxM9j47XSVocsp1YmD0",
             authDomain: "cuzdan-app.firebaseapp.com",
@@ -55,15 +56,22 @@ export default class LoginScreen extends React.Component{
             }
         });
     }
+
+    componentWillUmmount() {
+        this._isMounted = false;
+    }
     closeLoading(){
-        this.setState({loading:false});
+        if(this._isMounted)
+            this.setState({loading:false});
     }
     clearErrorMessage(){
-        this.setState({error:null});
+        if(this._isMounted)
+            this.setState({error:null});
     }
 
     async signIn(){
-        this.setState({loading:true});
+        if(this._isMounted)
+            this.setState({loading:true});
         this.clearErrorMessage();
         console.log("giriş denemesi");
         console.log(this.state.email,this.state.password)
@@ -77,17 +85,19 @@ export default class LoginScreen extends React.Component{
         .catch(
             (error)=>{
                 this.closeLoading();
-                this.setState({error:error});
+                if(this._isMounted)
+                    this.setState({error:error});
             }
         );
     }
     async signUp(){
-        this.setState({loading:true});
+        if(this._isMounted)
+            this.setState({loading:true});
         this.clearErrorMessage();
         console.log("kayit denemesi");
         console.log(this.state.email,this.state.password);
-        this.setState({loading:true});
-        await  firebase.auth().createUserWithEmailAndPassword(this.state.email,this.state.password)
+
+        await firebase.auth().createUserWithEmailAndPassword(this.state.email,this.state.password)
         .then(
             (result)=>{
                 console.log(result);
@@ -97,7 +107,8 @@ export default class LoginScreen extends React.Component{
             (error)=>{
                 console.log(error.message)
                 this.closeLoading();
-                this.setState({error:error});
+                if(this._isMounted)
+                    this.setState({error:error});
             }
         )
     }
@@ -114,15 +125,26 @@ export default class LoginScreen extends React.Component{
                 {!loading && (
                     <View>
                         <TextInput 
-                        autoFocus={true} 
-                        keyboardType="email-address" 
-                        autoCapitalize="none"  
-                        style={styles.inputs} 
-                        placeholder="E-mail" 
-                        onChangeText={(text)=>{this.setState({email:text})}}
-                        onSubmitEditing={()=>passwordInput.current.focus()}
+                            autoFocus={true} 
+                            keyboardType="email-address" 
+                            autoCapitalize="none"  
+                            style={styles.inputs} 
+                            placeholder="E-mail" 
+                            onChangeText={(text)=>{
+                                if(this._isMounted)
+                                    this.setState({email:text})
+                            }}
+                            onSubmitEditing={()=>passwordInput.current.focus()}
                         ></TextInput>
-                        <TextInput ref={passwordInput} secureTextEntry={true}  style = {styles.inputs}placeholder="Password" onChangeText={(text)=>{this.setState({password:text})}}></TextInput>
+                        <TextInput 
+                            ref={passwordInput} 
+                            secureTextEntry={true} 
+                            style = {styles.inputs}placeholder="Password" 
+                            onChangeText={(text)=>{
+                                if(this._isMounted)
+                                    this.setState({password:text})}
+                            }
+                        ></TextInput>
                         <TouchableOpacity style={styles.buttons} onPress={()=>this.signIn()} >
                             <View >
                                 <Text style={styles.buttonText}  >Giris Yap</Text>
