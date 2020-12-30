@@ -5,7 +5,7 @@ import {
     View,
     Text,
     SafeAreaView,
-
+    Dimensions
 } from "react-native";
 import {
     Card
@@ -219,6 +219,7 @@ export default connect(mapStateToProps)(TabTest)
 const styles = StyleSheet.create({
     cardContent:{
         left:-15,
+        
     },
     container:{
         flex:1,

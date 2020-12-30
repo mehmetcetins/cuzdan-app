@@ -115,10 +115,10 @@ class AddingScreen extends React.Component{
                     <TextInput label="Ürün Adı" onChangeText={(name) => this.nameChanged(name)}></TextInput>
                     <TextInput  label = "Toplam Fiyat" keyboardType="number-pad" onChangeText={(price) => this.priceChanged(price)} ></TextInput>
                     <TextInput  label = "Adet/Kilo" keyboardType="number-pad" onChangeText={(quantity) => this.quantityChanged(quantity)} ></TextInput>
-                    <Button contentStyle={styles.categoryButton} mode="outlined" onPress={()=> this.toggleDatePickerModal()}>
+                    <Button style={styles.categoryButton} mode="outlined" onPress={()=> this.toggleDatePickerModal()}>
                         {new Date(date).toLocaleDateString("tr-TR")}
                     </Button>
-                    <Button contentStyle={styles.categoryButton} mode="outlined" compact={true} onPress={()=> navigate('CategorySelecting')}>
+                    <Button style={styles.categoryButton} mode="outlined" compact={true} onPress={()=> navigate('CategorySelecting')}>
                         {categoryName}
                     </Button>
                     {showDatePicker && (
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     categoryButton:{
         borderWidth:1,
         borderColor:Colors.deepPurple900,
-        paddingVertical:15,
+        //paddingVertical:15,
         marginVertical:5,
     }, 
     addingInputs:{

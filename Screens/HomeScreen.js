@@ -136,16 +136,15 @@ class Home extends React.Component{
             <View style={styles.container}>
                 
                 
-                <Card style={{flex:1}} elevation={10}>
-                    <Card.Content >
-                    
-                        <VictoryChart  domain={{x:[0, 31 ]}} >
+                <Card style={{flex:1}} elevation={6}>
+                    <Card.Content style={{top:-50}} >
+                        <VictoryChart width={Dimensions.get("window").width-50} height={Dimensions.get("window").height/2.5} domain={{x:[0, 31 ]}}  >
                             <VictoryLine data = {graphsData} x = "d" y = "price" animate={{duration:200,}}></VictoryLine>
                             <VictoryLine style={{data: { stroke: "#c43a31" },}} data = {slr} x="d" y = "price"></VictoryLine>
                         </VictoryChart>
                         <Card.Title title="Kümülatif Grafik" />
                     </Card.Content>
-                   
+                    
                 </Card>
                 
                
@@ -154,12 +153,12 @@ class Home extends React.Component{
                             icon="plus-circle"
                             color={Colors.deepPurpleA700} 
                             style={styles.addButton} 
-                            size={64}
+                            size={46}
                             onPress= {()=>navigate("Adding")}
                         />
                     <Card.Content style={{flex:1,}}>
                         
-                        <SafeAreaView style={{flex:1,width:Dimensions.get("screen").width,}}>
+                        <SafeAreaView style={{flex:1,width:Dimensions.get("window").width-50,}}>
                         
                             
                             {isEmpty  && (<ActivityIndicator style={{flex:1,justifyContent:'center'}} size="large" color={Colors.redA100} animating={true}/>)}
@@ -196,14 +195,14 @@ const styles = StyleSheet.create({
     addButton:{
         position:"absolute",
         top:10,
-        right:50,
+        right:30,
         zIndex:99,
         color:Colors.deepPurpleA100,
 
     },  
     container: {
       flex: 1,
-      backgroundColor: '#fff',
+      //backgroundColor: '#fff',
       alignItems: 'center',
       justifyContent: 'center',
       
