@@ -1,11 +1,16 @@
-import { SELECT_CATEGORY, ADD_BOUGHT, SET_CATEGORIES,LIST_BOUGHT } from "../actionTypes";
+import { 
+  SELECT_CATEGORY,
+  ADD_BOUGHT,
+  SET_CATEGORIES,
+  LIST_BOUGHT,
+
+} from "../actionTypes";
 const initialState = {
   categoryName : "Kategori Seçiniz",
   allBoughts: [],
   categories: [],
 };
-let tempBoughts = [];
-let tempCategories = [];
+
 export default function reducer(state = initialState, action) {
   switch (action.type) {
     case SELECT_CATEGORY: {
@@ -34,6 +39,7 @@ export default function reducer(state = initialState, action) {
         categories:action.payload.categories,
       }
     }
+   
     case "TEST" : {
       console.log("test,test")
       return {

@@ -33,28 +33,32 @@ export default class LoginScreen extends React.Component{
             measurementId: "G-G19RPZHDNQ"
         };
         // Initialize Firebase
+        const {navigation : {navigate}} = this.props;
         if(!firebase.apps.length){
             firebase.initializeApp(firebaseConfig);
+            
         }
         
-
-        //firebase.analytics();
-        const {navigation : {navigate}} = this.props;
         firebase.auth().onAuthStateChanged((user)=>{
             if(user){
-                console.log("giriş yapıldı.");
+                //console.log("giriş yapıldı.");
                 //firebase.auth().signOut();
                 this.closeLoading();
                 navigate("Tab");
                 
             }
             else{
-                console.log("giriş yapılamadı.");
+                //console.log("giriş yapılamadı.");
                 this.closeLoading();
                 navigate("Login");
                 
             }
         });
+
+        //firebase.analytics();
+        
+        
+        
     }
 
     componentWillUmmount() {
@@ -73,13 +77,14 @@ export default class LoginScreen extends React.Component{
         if(this._isMounted)
             this.setState({loading:true});
         this.clearErrorMessage();
-        console.log("giriş denemesi");
-        console.log(this.state.email,this.state.password)
-        await firebase.auth().signInWithEmailAndPassword(this.state.email,this.state.password)
+        //console.log("giriş denemesi");
+        //console.log(this.state.email,this.state.password)
+        const {email,password} = this.state;
+        await firebase.auth().signInWithEmailAndPassword(email,password)
         .then(
             (result)=>{
                 
-                console.log(result);
+                //console.log(result);
             }
         )
         .catch(
@@ -94,18 +99,18 @@ export default class LoginScreen extends React.Component{
         if(this._isMounted)
             this.setState({loading:true});
         this.clearErrorMessage();
-        console.log("kayit denemesi");
-        console.log(this.state.email,this.state.password);
-
-        await firebase.auth().createUserWithEmailAndPassword(this.state.email,this.state.password)
+        //console.log("kayit denemesi");
+        //console.log(this.state.email,this.state.password);
+        const {email,password} = this.state;
+        await firebase.auth().createUserWithEmailAndPassword(email,password)
         .then(
             (result)=>{
-                console.log(result);
+                //console.log(result);
             }
         )
         .catch(
             (error)=>{
-                console.log(error.message)
+                //console.log(error.message)
                 this.closeLoading();
                 if(this._isMounted)
                     this.setState({error:error});

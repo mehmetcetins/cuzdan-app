@@ -1,4 +1,11 @@
-import { SELECT_CATEGORY,ADD_BOUGHT,LIST_BOUGHT,SET_CATEGORIES } from "./actionTypes";
+import { 
+    SELECT_CATEGORY,
+    ADD_BOUGHT,
+    LIST_BOUGHT,
+    SET_CATEGORIES,
+    LOG_OUT,
+    LOGIN_UPDATE,
+} from "./actionTypes";
 
 import * as firebase from 'firebase';
 
@@ -83,4 +90,6 @@ export const addBoughts = ({name,price,quantity,categoryName}) => {
 
 export const logout = ()=> {
     firebase.auth().signOut();
+    
 }
+
