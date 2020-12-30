@@ -34,7 +34,7 @@ class AddingScreen extends React.Component{
         const {categoryName} = this.props;
         
         this.props.addBoughts({name,price,quantity,categoryName});
-       
+        this.props.listBoughts();
         //this.boughtList();
     }
 
@@ -113,7 +113,13 @@ const mapStateToProps = (state)=>{
         items:state.cuzdan.allBoughts,
     }
 }
-const mapDispatchToProps = {addBoughts,listBoughts}
+const mapDispatchToProps = (dispatch)=>{
+    return {
+        listBoughts:()=>listBoughts(dispatch),
+        addBoughts:(parameters)=>addBoughts(parameters),
+    }
+}
+
 
 export default connect(mapStateToProps,mapDispatchToProps)(AddingScreen)
 

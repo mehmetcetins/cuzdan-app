@@ -1,12 +1,13 @@
-import { SELECT_CATEGORY, ADD_BOUGHT } from "../actionTypes";
+import { SELECT_CATEGORY, ADD_BOUGHT, SET_CATEGORIES,LIST_BOUGHT } from "../actionTypes";
 import * as firebase from 'firebase';
 const initialState = {
   categoryName : "Kategori Seçiniz",
   allBoughts: [],
+  categories: [],
 };
 let tempBoughts = [];
-
-export default function(state = initialState, action) {
+let tempCategories = [];
+export default function reducer(state = initialState, action) {
   switch (action.type) {
     case SELECT_CATEGORY: {
       
@@ -18,11 +19,27 @@ export default function(state = initialState, action) {
       };
     }
     case ADD_BOUGHT: {
-      listBoughts();
-      
+      return null
+    }
+    case LIST_BOUGHT:{
       return {
         ...state,
-        allBoughts:tempBoughts,
+        allBoughts:action.payload.allBoughts,
+      }
+    }
+    case SET_CATEGORIES:{
+     
+      console.log(action.payload.categories) 
+      return {
+        ...state,
+        categories:action.payload.categories,
+      }
+    }
+    case "TEST" : {
+      console.log("test,test")
+      return {
+        ...state,
+        allBoughts: tempBoughts,
       }
     }
   
@@ -32,26 +49,10 @@ export default function(state = initialState, action) {
 }
 
 
-const setAllBoughts = (allBoughts)=>{
-  tempBoughts = allBoughts;
-};
 
-const listBoughts = ()=> {
-  const database = firebase.database();
-    database.ref("boughts").child(firebase.auth().currentUser.uid).once('value',(snapshot) => {
-      if(snapshot.exists()){
-        let allBoughts = [];
-        for (const [key,value] of Object.entries(snapshot.val())){
-          allBoughts.push({
-          key : key,
-          name: value.name,
-          price : value.price,
-          quantity: value.quantity,
-          date: new Date(value.date).toLocaleDateString("tr-TR"),
-          })
-         
-        }
-        setAllBoughts(allBoughts);
-      }
-      });
+
+const setCategories = (allCategories)=> {
+  tempCategories = allCategories
 }
+
+

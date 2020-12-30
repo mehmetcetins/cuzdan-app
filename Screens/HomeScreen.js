@@ -2,8 +2,9 @@ import React from "react";
 import {
     StyleSheet,
     View,
-  
+    ScrollView,
     Modal,
+    Text,
 
 } from "react-native";
 import { Button } from 'react-native-paper';
@@ -13,14 +14,13 @@ import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-react-native';
 import * as firebase from "firebase";
 import {SLR} from "ml-regression";
-
+import ProductList from "../components/productList";
 import { connect } from 'react-redux';
-import { listBoughts } from '../redux/actions';
+import {setCategories,listBoughts} from "../redux/actions";
 
 class Home extends React.Component{
     constructor(props){
-        super(props);
-        
+        super(props)
     }
     state={
         isTfReady: false,
@@ -119,12 +119,20 @@ class Home extends React.Component{
                 }
             }
         );*/
-
-        this.cumulativeGraph(this.props.items);
-
+        //console.log(store)
+        
+        this.props.setCategories();
+        this.props.listBoughts();
+    }
+    componentDidUpdate(prevProps){
+        if(this.props.items != prevProps.items){
+            this.cumulativeGraph(this.props.items);
+        }
+        
     }
 
     cumulativeGraph(snapshot){
+       
         let purchased = [];
         let currentDateofMonth;
         let oldPrice = 0;
@@ -137,9 +145,9 @@ class Home extends React.Component{
                 d:i,
                 price:0,
             });
-        };
-        
-        for (const[key,value] of Object.entries(snapshot.val())){
+        }; 
+        for (const value of snapshot){
+            
             currentDateofMonth = new Date(value.date).getDate()
             
             oldPrice = purchased[currentDateofMonth].price 
@@ -176,7 +184,7 @@ class Home extends React.Component{
         slrPlot = slrPlot.filter(x => x.price > 0);
         //console.log(slrPlot)
         this.setState({slr:slrPlot});
-        this.setState({predictedTotalExpense:slrPlot[slrPlot.length-1]})
+        this.setState({predictedTotalExpense:slrPlot[slrPlot.length-1]}) 
     }
     updateGraphs(purchased){
         this.setState({graphsData:purchased}); 
@@ -187,7 +195,8 @@ class Home extends React.Component{
     }
 
     render(){
-        const {navigation : {navigate}} = this.props;
+        //this.props.listBoughts();
+        const {navigation : {navigate},items} = this.props;
         const {slr,graphsData} = this.state;
         const month = new Date(Date.now()); 
         const lengthOfMonth = new Date(month.getFullYear(),month.getMonth(),0).getDate();
@@ -200,19 +209,29 @@ class Home extends React.Component{
                 <Button mode="contained" onPress= {()=>navigate("Adding")}>Ekle</Button>
                 <Button mode="contained" onPress= {()=>navigate("CategoryAdding")}>Kategori Ekle</Button>
                 <Button mode="contained"  onPress= {()=>this.logout()}>Çıkış</Button>
-                <MyInput navigateFunc={navigate}></MyInput>
+                
+                <ScrollView style={{width:300}}>
+                    <ProductList products={items}/>
+                </ScrollView>
+                
             </View>
         );
     }
 }
+//<MyInput navigateFunc={navigate}></MyInput>
 const mapStateToProps = (state)=>{
     //console.log(state);
     return {
         items:state.cuzdan.allBoughts,
     }
 }
-
-export default connect(mapStateToProps)(Home)
+const mapDispatchToProps = (dispatch)=>{
+    return {
+        listBoughts:()=>listBoughts(dispatch),
+        setCategories:()=>setCategories(dispatch),
+    }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Home)
 const styles = StyleSheet.create({
     container: {
       flex: 1,

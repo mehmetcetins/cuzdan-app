@@ -2,7 +2,8 @@ import React from "react";
 import {
     Text,
 } from "react-native";
-import { FontAwesome5 } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
 export default class PieIcons extends React.Component {
 
     render() {
@@ -13,8 +14,10 @@ export default class PieIcons extends React.Component {
             "Yaşam & Eğlence":"smile",
             "Elektronik":"plug",
         }
+       
         const {x, y, datum} = this.props;
-        const Icon = labels[datum.category] 
+        const Icon = datum.icon
+        
         //console.log(x+" "+y)
         return (
         <Text style={{
@@ -22,8 +25,9 @@ export default class PieIcons extends React.Component {
             top:y-10,
             left:x-10,
         }}  >
-            <FontAwesome5 name={Icon} size={24} color="black" />
+            <MaterialCommunityIcons name={Icon} size={24} color="black" />
         </Text>
         );
     }
 }
+

@@ -84,7 +84,7 @@ class TabTest extends React.Component{
         let sumOfAll = 0;
         let isThere = false;
         let percentList = [];
-
+        let icon = "";
         for (const [key,value] of entries){
             categoryName = value.categoryName;
             categoryPrice = parseFloat(value.price);
@@ -105,7 +105,13 @@ class TabTest extends React.Component{
                 }
                 
                 sumOfAll += categoryPrice;
-                percentList.push({category:categoryName,percent:categoryPrice})
+                for (element of this.props.categories){
+                    
+                    if (element.name == categoryName){
+                        icon = element.icon;
+                    }
+                }
+                percentList.push({category:categoryName,percent:categoryPrice,icon:icon})
             }
             
         }
@@ -161,6 +167,7 @@ const mapStateToProps = (state)=>{
     //console.log(state);
     return {
         items:state.cuzdan.allBoughts,
+        categories:state.cuzdan.categories,
     }
 }
 

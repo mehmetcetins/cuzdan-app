@@ -13,19 +13,6 @@ import { selectCategory } from '../redux/actions';
 
 
 class CategorySelectingScreen extends React.Component{
-    state = {
-        categories:null,
-    }
-
-    componentDidMount(){
-        const database = firebase.database();
-        database.ref("categories").once('value').then((snapshot) => {
-            this.setState({categories:(Object.values(snapshot.val()))});
-        });
-        
-        
-    }
-
     changeCategory(name){
         const {navigation} = this.props;
         this.props.selectCategory(name)
@@ -49,7 +36,7 @@ class CategorySelectingScreen extends React.Component{
             <List.Section>
 
                 <FlatList 
-                data={this.state.categories}
+                data={this.props.categories}
                 renderItem={({item,index}) => this.categoryItems(item,index)}
                 keyExtractor={(item, index) => index.toString()}
 
@@ -69,7 +56,9 @@ const styles = StyleSheet.create({
     }
 })
 const mapStateToProps = (state) => {
-    return {}
+    return {
+        categories:state.cuzdan.categories,
+    }
 }
 const mapDispatchToProps = {selectCategory};
 
