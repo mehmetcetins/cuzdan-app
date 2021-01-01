@@ -37,8 +37,8 @@ class AddingScreen extends React.Component{
         const {name,price,quantity,date} = this.state;
         const {categoryName} = this.props;
         this.setState({snackBarVisible:true});
-        //this.props.addBoughts({name,price,quantity,categoryName,date});
-        //this.props.listBoughts();
+        this.props.addBoughts({name,price,quantity,categoryName,date});
+        this.props.listBoughts();
         //this.boughtList();
     }
 

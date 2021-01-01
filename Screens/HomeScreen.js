@@ -61,14 +61,15 @@ class Home extends React.Component{
         let purchased = [];
         let currentDateofMonth;
         let oldPrice = 0;
-        const month = new Date(Date.now()); 
+        /*const month = new Date(Date.now()); 
         const lengthOfMonth = new Date(month.getFullYear(),month.getMonth(),0).getDate();
         let date = new Date(Date.now()).getDate()
-        
-        for (let i = 1; i<= date+1;i++){
+        */
+        for (let i = 1; i<= 31;i++){
             purchased.push({
                 d:i,
                 price:0,
+                name:"",
             });
         }; 
         for (const value of snapshot){
@@ -77,8 +78,18 @@ class Home extends React.Component{
             
             oldPrice = purchased[currentDateofMonth].price 
             
-            purchased[currentDateofMonth] = {price:oldPrice + parseFloat(value.price),d:currentDateofMonth}
+            purchased[currentDateofMonth] = {price:oldPrice + parseFloat(value.price),d:currentDateofMonth,name:value.name}
         }
+        let endIndex = 30;
+        for(let i = 30 ;i>0;i--){
+            if(purchased[i].name !== ""){
+                endIndex=i;
+                break;
+            }
+        }
+        
+        purchased = purchased.slice(0,endIndex+1);
+       
         oldPrice = 0;
         for (let i = 0 ;i<purchased.length;i++){
             oldPrice += purchased[i].price
@@ -111,8 +122,8 @@ class Home extends React.Component{
         slrPlot = slrPlot.filter(x => x.price > 0);
         //console.log(slrPlot)
         if(this._isMounted){
-            this.setState({slr:slrPlot});
-            this.setState({predictedTotalExpense:slrPlot[slrPlot.length-1]}) 
+            //this.setState({slr:slrPlot});
+            //this.setState({predictedTotalExpense:slrPlot[slrPlot.length-1]}) 
         }
     }
     updateGraphs(purchased){

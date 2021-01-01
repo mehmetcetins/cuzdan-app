@@ -4,11 +4,13 @@ import {
     StyleSheet,
     View,
     Text,
-    TextInput,
     TouchableOpacity,
     Dimensions,
+    
 } from "react-native";
 import {
+    Button,
+    TextInput,
     ActivityIndicator,
     Colors
 } from "react-native-paper"
@@ -131,73 +133,86 @@ export default class LoginScreen extends React.Component{
                 
                 <ActivityIndicator size="large" color={Colors.red800} animating={loading}/>
                 {!loading && (
-                    <View>
+                    <View >
                         <TextInput 
                             autoFocus={true} 
                             keyboardType="email-address" 
                             autoCapitalize="none"  
                             style={styles.inputs} 
-                            placeholder="E-mail" 
+                            label="E-mail" 
                             onChangeText={(text)=>{
                                 if(this._isMounted)
                                     this.setState({email:text})
                             }}
+                            blurOnSubmit={false}
                             onSubmitEditing={()=>passwordInput.current.focus()}
                         ></TextInput>
                         <TextInput 
                             ref={passwordInput} 
                             secureTextEntry={true} 
-                            style = {styles.inputs}placeholder="Password" 
+                            label="Şifre"
+                            style = {styles.inputs}
+                            //placeholder="Password" 
                             onChangeText={(text)=>{
                                 if(this._isMounted)
                                     this.setState({password:text})}
                             }
                         ></TextInput>
-                        <TouchableOpacity style={styles.buttons} onPress={()=>this.signIn()} >
-                            <View >
-                                <Text style={styles.buttonText}  >Giris Yap</Text>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttons} onPress={()=>this.signUp()}>
-                            <View>
-                                <Text style={styles.buttonText} >Kayıt Ol</Text>
-                            </View>
-                        </TouchableOpacity>
+                        <Button style={styles.buttons} contentStyle={styles.buttonsContent} mode= "contained" onPress={()=>this.signIn()}>
+                            Giris Yap
+                        </Button>
+                        <Button style={styles.buttons} contentStyle={styles.buttonsContent} mode= "contained" onPress={()=>this.signUp()}>
+                            Kayıt Ol
+                        </Button>
                     </View>
                 )}
             </View>
         );
     }
 }
-
+/*
+<TouchableOpacity style={styles.buttons} onPress={()=>this.signIn()} >
+                            <View >
+                                <Text style={styles.buttonText}  ></Text>
+                            </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.buttons} onPress={()=>this.signUp()}>
+                            <View>
+                                <Text style={styles.buttonText} >Kayıt Ol</Text>
+                            </View>
+                        </TouchableOpacity>
+*/
 const styles = StyleSheet.create({
     container:{
         flex:1,
         justifyContent:"center",
-        alignItems:"center",
+        //alignItems:"center",
     },
     inputs:{
         width:Dimensions.get("screen").width-20,
-        borderWidth:1,
+        /*borderWidth:1,
         alignItems:"center",
         padding:10,
-        marginTop:10,
+        marginTop:10,*/
         marginHorizontal:10,
+    },
+    buttonsContent:{
+        paddingVertical:20,
     },
     buttons:{
         width:Dimensions.get("screen").width-20,
         marginHorizontal:10,
-        paddingVertical:20,
+        
         marginTop:10,
-        justifyContent:"center",
+        /*justifyContent:"center",
         alignItems:"center",
         backgroundColor:"lightcoral",
         shadowColor:"black",
         shadowOffset:{
             width:0,
             height:2,
-        },
-        elevation:5,
+        },*/
+        elevation:50,
     },
     buttonText:{
         color:"white",
