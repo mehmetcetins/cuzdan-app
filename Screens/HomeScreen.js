@@ -27,13 +27,7 @@ class Home extends React.Component{
     state={
         isTfReady: false,
         modelPredictions: [],
-        graphsData: [
-            {d:1,price :50},
-            {d:2,price :10},
-            {d:3,price :30},
-            {d:4,price :35},
-            {d:5,price :40},
-        ],
+        graphsData: [],
         slr: [],
         predictedTotalExpense:0,
         showLoginModal:false,
@@ -122,8 +116,10 @@ class Home extends React.Component{
         slrPlot = slrPlot.filter(x => x.price > 0);
         //console.log(slrPlot)
         if(this._isMounted){
-            //this.setState({slr:slrPlot});
-            //this.setState({predictedTotalExpense:slrPlot[slrPlot.length-1]}) 
+            this.setState({
+                slr:slrPlot,
+                predictedTotalExpense:slrPlot[slrPlot.length-1]
+            });
         }
     }
     updateGraphs(purchased){
@@ -151,7 +147,7 @@ class Home extends React.Component{
                     <Card.Content style={{top:-50}} >
                         <VictoryChart width={Dimensions.get("window").width-50} height={Dimensions.get("window").height/2.5} domain={{x:[0, 31 ]}}  >
                             <VictoryLine data = {graphsData} x = "d" y = "price" animate={{duration:200,}}></VictoryLine>
-                            <VictoryLine style={{data: { stroke: "#c43a31" },}} data = {slr} x="d" y = "price"></VictoryLine>
+                            <VictoryLine style={{data: { stroke: "#c43a31" },}} data = {slr} x="d" y = "price" animate={{duration:200,}}></VictoryLine>
                         </VictoryChart>
                         <Card.Title title="Kümülatif Grafik" />
                     </Card.Content>

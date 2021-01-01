@@ -33,12 +33,14 @@ class AddingScreen extends React.Component{
     };
 
     _isMounted = false;
-    async addBought(){
+    async addBought(inputRef){
         const {name,price,quantity,date} = this.state;
         const {categoryName} = this.props;
-        this.setState({snackBarVisible:true});
+        this.snackBarDissmiss({snackBarVisible:true});
         this.props.addBoughts({name,price,quantity,categoryName,date});
         this.props.listBoughts();
+        this.clearInputs();
+        this.focusNextInput(inputRef);
         //this.boughtList();
     }
 
@@ -66,7 +68,16 @@ class AddingScreen extends React.Component{
         
     }
 
-    
+    clearInputs(){
+        if(this._isMounted){
+            this.setState({
+                name:'',
+                price:'',
+                quantity:'',
+            })
+        }
+    }
+
     nameChanged(newName){
         if(this._isMounted)
             this.setState({name:newName})
@@ -79,9 +90,16 @@ class AddingScreen extends React.Component{
         if(this._isMounted)
             this.setState({quantity:newQuantity});
     }
+    dateChanged(newDate){
+        this.setState(newDate)
+    }
     toggleDatePickerModal(){
         if(this._isMounted)
             this.setState({showDatePicker:!this.state.showDatePicker})
+    }
+    snackBarDissmiss(visible){
+        if(this._isMounted)
+            this.setState(visible);
     }
     componentDidMount(){
         //console.log(FirebaseCore.DEFAULT_APP_OPTIONS);
@@ -94,17 +112,30 @@ class AddingScreen extends React.Component{
         //this.unsubscribe();
         this._isMounted = false;
     }
+
+    focusNextInput(inputRef){
+        inputRef.current.focus();
+    }
     render(){
-        const {date,showDatePicker,snackBarVisible,} = this.state;
+        const {
+            date,
+            showDatePicker,
+            snackBarVisible,
+            name,
+            price,
+            quantity
+        } = this.state;
         const {navigation:{navigate},categoryName,items} = this.props;
-        //
+        const nameInput = React.createRef();
+        const priceInput = React.createRef();
+        const quantityInput = React.createRef();
         return (
             <View style={styles.container}>
                     <Snackbar
                         visible={snackBarVisible}
                         style= {{backgroundColor:Colors.green400}}
                         onDismiss = {()=> {
-                          this.setState({snackBarVisible:false});  
+                          this.snackBarDissmiss({snackBarVisible:false});  
                         }}
                         duration = {100}
                         >
@@ -112,9 +143,32 @@ class AddingScreen extends React.Component{
                     </Snackbar>
                 <View >
                
-                    <TextInput label="Ürün Adı" onChangeText={(name) => this.nameChanged(name)}></TextInput>
-                    <TextInput  label = "Toplam Fiyat" keyboardType="number-pad" onChangeText={(price) => this.priceChanged(price)} ></TextInput>
-                    <TextInput  label = "Adet/Kilo" keyboardType="number-pad" onChangeText={(quantity) => this.quantityChanged(quantity)} ></TextInput>
+                    <TextInput
+                        autoFocus={true}
+                        ref={nameInput}
+                        label="Ürün Adı"
+                        value={name}
+                        onChangeText={(name) => this.nameChanged(name)}
+                        blurOnSubmit={false}
+                        onSubmitEditing={()=>this.focusNextInput(priceInput)}
+                     ></TextInput>
+                    <TextInput 
+                        ref={priceInput}  
+                        label = "Toplam Fiyat" 
+                        value={price}
+                        keyboardType="number-pad" 
+                        onChangeText={(price) => this.priceChanged(price)} 
+                        blurOnSubmit={false}
+                        onSubmitEditing={()=>this.focusNextInput(quantityInput)}
+                    ></TextInput>
+                    <TextInput 
+                    ref={quantityInput}  
+                    label = "Adet/Kilo" 
+                    value={quantity}
+                    keyboardType="number-pad"
+                    blurOnSubmit={false}
+                    onChangeText={(quantity) => this.quantityChanged(quantity)} 
+                    ></TextInput>
                     <Button style={styles.categoryButton} mode="outlined" onPress={()=> this.toggleDatePickerModal()}>
                         {new Date(date).toLocaleDateString("tr-TR")}
                     </Button>
@@ -126,8 +180,7 @@ class AddingScreen extends React.Component{
                             onChange={(event,selectedDate)=>{
                                 this.toggleDatePickerModal();
                                 if(selectedDate){
-                                    this.setState({date:event.nativeEvent.timestamp})
-                                    
+                                    this.dateChanged({date:event.nativeEvent.timestamp})
                                 }
                                 
                             }}
@@ -136,7 +189,7 @@ class AddingScreen extends React.Component{
                     
                     
                 </View>
-                <Button mode="contained" onPress={()=> this.addBought()}>EKLE</Button>
+                <Button mode="contained" onPress={()=> this.addBought(nameInput)}>EKLE</Button>
                 <SafeAreaView style={{flex:1,}}>
                     <ProductList products={items}/>
                 </SafeAreaView>

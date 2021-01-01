@@ -24,6 +24,7 @@ export default class LoginScreen extends React.Component{
         loading:true,
         
     };
+    
     _isMounted = false;
     componentDidMount(){
         this._isMounted = true;
@@ -124,7 +125,7 @@ export default class LoginScreen extends React.Component{
     }
     render(){
         const {error,loading} = this.state;
-        let passwordInput = React.createRef();
+        const passwordInput = React.createRef();
         return(
             <View style={styles.container}>
                 {error && (
