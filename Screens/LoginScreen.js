@@ -14,21 +14,27 @@ import {
     ActivityIndicator,
     Colors
 } from "react-native-paper"
+import {getErrorMessage} from "../utils/localizedErrorMessage";
 import * as firebase from "firebase";
-export default class LoginScreen extends React.Component{
+
+import { connect } from 'react-redux';
+import {changeLoadingState} from "../redux/actions";
+
+
+const screen = Dimensions.get("screen");
+
+class LoginScreen extends React.Component{
     
     state={
         email:"",
         password:"",
         error:null,
-        loading:true,
         
     };
     
-    _isMounted = false;
     componentDidMount(){
-        this._isMounted = true;
-        var firebaseConfig = {
+        
+        const firebaseConfig = {
             apiKey: "AIzaSyAaTnLART9qx_m9QxM9j47XSVocsp1YmD0",
             authDomain: "cuzdan-app.firebaseapp.com",
             databaseURL: "https://cuzdan-app.firebaseio.com",
@@ -42,51 +48,51 @@ export default class LoginScreen extends React.Component{
         const {navigation : {navigate}} = this.props;
         if(!firebase.apps.length){
             firebase.initializeApp(firebaseConfig);
+            firebase.auth().onAuthStateChanged((user)=>{
+                if(user){
+                    //console.log("giriş yapıldı.");
+                    //firebase.auth().signOut();
+                    this.endLoading();
+                    navigate("Drawer");
+                    
+                }
+                else{
+                    //console.log("giriş yapılamadı.");
+                    this.endLoading();
+                    navigate("Login");
+                    
+                }
+            });
+    
             
         }
         
-        firebase.auth().onAuthStateChanged((user)=>{
-            if(user){
-                //console.log("giriş yapıldı.");
-                //firebase.auth().signOut();
-                this.closeLoading();
-                navigate("Tab");
-                
-            }
-            else{
-                //console.log("giriş yapılamadı.");
-                this.closeLoading();
-                navigate("Login");
-                
-            }
-        });
-
+        
         //firebase.analytics();
         
         
         
     }
 
-    componentWillUmmount() {
-        this._isMounted = false;
+    startLoading(){
+        this.props.changeLoadingState(true);
     }
-    closeLoading(){
-        if(this._isMounted)
-            this.setState({loading:false});
+    endLoading(){
+        this.props.changeLoadingState(false);
     }
     clearErrorMessage(){
-        if(this._isMounted)
-            this.setState({error:null});
+    
+        this.setState({error:null});
     }
 
-    async signIn(){
-        if(this._isMounted)
-            this.setState({loading:true});
+    signIn(){
+        
+        this.startLoading();
         this.clearErrorMessage();
         //console.log("giriş denemesi");
         //console.log(this.state.email,this.state.password)
         const {email,password} = this.state;
-        await firebase.auth().signInWithEmailAndPassword(email,password)
+        firebase.auth().signInWithEmailAndPassword(email,password)
         .then(
             (result)=>{
                 
@@ -95,55 +101,37 @@ export default class LoginScreen extends React.Component{
         )
         .catch(
             (error)=>{
-                this.closeLoading();
-                if(this._isMounted)
-                    this.setState({error:error});
+                this.endLoading();
+                this.setState({error:error});
+                //console.log(error)
             }
         );
     }
-    async signUp(){
-        if(this._isMounted)
-            this.setState({loading:true});
-        this.clearErrorMessage();
-        //console.log("kayit denemesi");
-        //console.log(this.state.email,this.state.password);
-        const {email,password} = this.state;
-        await firebase.auth().createUserWithEmailAndPassword(email,password)
-        .then(
-            (result)=>{
-                //console.log(result);
-            }
-        )
-        .catch(
-            (error)=>{
-                //console.log(error.message)
-                this.closeLoading();
-                if(this._isMounted)
-                    this.setState({error:error});
-            }
-        )
+    signUp(){
+        this.props.navigation.navigate("Signup");
+        
     }
     render(){
-        const {error,loading} = this.state;
+        const {error} = this.state;
+        const {isLoading} = this.props;
         const passwordInput = React.createRef();
         return(
             <View style={styles.container}>
+                <View style={styles.loginSection}>
                 {error && (
-                    <Text style={{width:Dimensions.get("screen").width-40,fontSize:18}}>{error.message}</Text>
+                    <Text style={styles.errorText}>{getErrorMessage(error.code)}</Text>
                 )}
-                
-                <ActivityIndicator size="large" color={Colors.red800} animating={loading}/>
-                {!loading && (
-                    <View >
+                <ActivityIndicator size="large" color={Colors.red800} animating={isLoading}/>
+                {!isLoading && (
+                    <View>
                         <TextInput 
                             autoFocus={true} 
                             keyboardType="email-address" 
                             autoCapitalize="none"  
                             style={styles.inputs} 
-                            label="E-mail" 
+                            label="E-Posta" 
                             onChangeText={(text)=>{
-                                if(this._isMounted)
-                                    this.setState({email:text})
+                                this.setState({email:text})
                             }}
                             blurOnSubmit={false}
                             onSubmitEditing={()=>passwordInput.current.focus()}
@@ -155,8 +143,8 @@ export default class LoginScreen extends React.Component{
                             style = {styles.inputs}
                             //placeholder="Password" 
                             onChangeText={(text)=>{
-                                if(this._isMounted)
-                                    this.setState({password:text})}
+                                
+                                this.setState({password:text})}
                             }
                         ></TextInput>
                         <Button style={styles.buttons} contentStyle={styles.buttonsContent} mode= "contained" onPress={()=>this.signIn()}>
@@ -167,57 +155,45 @@ export default class LoginScreen extends React.Component{
                         </Button>
                     </View>
                 )}
+                </View>
             </View>
         );
     }
 }
-/*
-<TouchableOpacity style={styles.buttons} onPress={()=>this.signIn()} >
-                            <View >
-                                <Text style={styles.buttonText}  ></Text>
-                            </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={styles.buttons} onPress={()=>this.signUp()}>
-                            <View>
-                                <Text style={styles.buttonText} >Kayıt Ol</Text>
-                            </View>
-                        </TouchableOpacity>
-*/
+
+const mapStateToProps = (state)=>{
+    //console.log(state);
+    return {
+        isLoading:state.cuzdan.isLoading,
+    }
+}
+const mapDispatchToProps = {changeLoadingState}
+export default connect(mapStateToProps,mapDispatchToProps)(LoginScreen)
+
 const styles = StyleSheet.create({
     container:{
         flex:1,
         justifyContent:"center",
-        //alignItems:"center",
+        alignItems:'center'
+    },
+    loginSection:{
+        width:screen.width-20
     },
     inputs:{
-        width:Dimensions.get("screen").width-20,
-        /*borderWidth:1,
-        alignItems:"center",
-        padding:10,
-        marginTop:10,*/
-        marginHorizontal:10,
+        
+
+
     },
     buttonsContent:{
         paddingVertical:20,
     },
     buttons:{
-        width:Dimensions.get("screen").width-20,
-        marginHorizontal:10,
-        
         marginTop:10,
-        /*justifyContent:"center",
-        alignItems:"center",
-        backgroundColor:"lightcoral",
-        shadowColor:"black",
-        shadowOffset:{
-            width:0,
-            height:2,
-        },*/
         elevation:50,
     },
-    buttonText:{
-        color:"white",
-        fontSize:16,
+    errorText:{
+        fontSize:18,
+        color:Colors.red900,
     }
 
 })

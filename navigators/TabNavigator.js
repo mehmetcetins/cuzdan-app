@@ -6,17 +6,17 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import HomeScreens from "./HomeNavigator";
 
-import TabTest from "../screens/tabBarTest";
+import GraphsScreen from "../screens/GraphsScreen";
 
 const getTabBarIcon = icon => ({ tintColor }) => (
     <MaterialCommunityIcons name={icon} size={26} style={{ color: tintColor }} />
 );
 
-export default TabBarTest = createBottomTabNavigator(
+export default TabNavigator = createBottomTabNavigator(
     {
         Home : HomeScreens,
-        Test : {
-            screen: TabTest,
+        Graphs : {
+            screen: GraphsScreen,
             navigationOptions:{
                 tabBarIcon: getTabBarIcon("scale-balance"),
                 

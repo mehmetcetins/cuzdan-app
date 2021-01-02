@@ -4,13 +4,15 @@ import {
     View,
     SafeAreaView,
     Dimensions,
+    Text,
 } from "react-native";
 import { 
     Button,
     ActivityIndicator,
     Colors,
     Card,
-    IconButton
+    IconButton,
+    Title,
 } from 'react-native-paper';
 import {
     VictoryChart,
@@ -20,8 +22,10 @@ import '@tensorflow/tfjs-react-native';
 import {SLR} from "ml-regression";
 import ProductList from "../components/productList";
 import { connect } from 'react-redux';
-import {setCategories,listBoughts,logout} from "../redux/actions";
+import {setCategories,listBoughts,logout,setDates} from "../redux/actions";
 
+const screen = Dimensions.get("screen");
+const window = Dimensions.get("window");
 class Home extends React.Component{
     
     state={
@@ -33,12 +37,38 @@ class Home extends React.Component{
         showLoginModal:false,
     };
 
-    _isMounted = false;
+    
    
+    static navigationOptions = ({ navigation }) => {
+
+        return {
+            
+            headerLeft:(props)=> {
+                //console.log(props)
+                return (
+                    
+                  <IconButton
+                    icon='menu'
+                    color={Colors.black}
+                    size={26} 
+                    style={{marginLeft:10,}}
+                    onPress={()=> {
+                        navigation.openDrawer();
+                    }}
+                    />
+                    
+                )
+            }
+        }
+    }
+
     componentDidMount(){
-        this._isMounted = true;
-        this.props.setCategories();
-        this.props.listBoughts();
+       
+        
+        const {setCategories,listBoughts,setDates,startDate,endDate} = this.props;
+        setCategories();
+        setDates(-1,-1);
+        listBoughts(-1,-1);
     }
     componentDidUpdate(prevProps){
         if(this.props.items != prevProps.items){
@@ -46,9 +76,7 @@ class Home extends React.Component{
         }
         
     }
-    componentWillUnmount(){
-        this._isMounted = false;
-    }
+
 
     cumulativeGraph(snapshot){
        
@@ -115,25 +143,23 @@ class Home extends React.Component{
         }
         slrPlot = slrPlot.filter(x => x.price > 0);
         //console.log(slrPlot)
-        if(this._isMounted){
-            this.setState({
-                slr:slrPlot,
-                predictedTotalExpense:slrPlot[slrPlot.length-1]
-            });
-        }
+       
+        this.setState({
+            slr:slrPlot,
+            predictedTotalExpense:slrPlot[slrPlot.length-1]
+        });
+        
     }
     updateGraphs(purchased){
-        if (this._isMounted)
+        
             this.setState({graphsData:purchased}); 
     }
 
-    logout(){
-        this.props.logout();
-    }
+    
 
     render(){
         //this.props.listBoughts();
-        const {navigation : {navigate},items,isEmpty} = this.props;
+        const {navigation : {navigate},items,isFetching} = this.props;
         const {slr,graphsData} = this.state;
         //const month = new Date(Date.now()); 
         //const lengthOfMonth = new Date(month.getFullYear(),month.getMonth(),).getDate();
@@ -143,9 +169,9 @@ class Home extends React.Component{
             <View style={styles.container}>
                 
                 
-                <Card style={{flex:1}} elevation={6}>
+                <Card style={styles.cardStlye} elevation={6}>
                     <Card.Content style={{top:-50}} >
-                        <VictoryChart width={Dimensions.get("window").width-50} height={Dimensions.get("window").height/2.5} domain={{x:[0, 31 ]}}  >
+                        <VictoryChart width={window.width-50} height={window.height/2.5} domain={{x:[0, 31 ]}}  >
                             <VictoryLine data = {graphsData} x = "d" y = "price" animate={{duration:200,}}></VictoryLine>
                             <VictoryLine style={{data: { stroke: "#c43a31" },}} data = {slr} x="d" y = "price" animate={{duration:200,}}></VictoryLine>
                         </VictoryChart>
@@ -155,7 +181,7 @@ class Home extends React.Component{
                 </Card>
                 
                
-                <Card style={{flex:1}}  elevation={5}>
+                <Card style={styles.cardStlye}  elevation={5}>
                         <IconButton 
                             icon="plus-circle"
                             color={Colors.deepPurpleA700} 
@@ -165,40 +191,41 @@ class Home extends React.Component{
                         />
                     <Card.Content style={{flex:1,}}>
                         
-                        <SafeAreaView style={{flex:1,width:Dimensions.get("window").width-50,}}>
+                        <SafeAreaView style={styles.scrollAreaStyle}>
                         
                             
-                            {isEmpty  && (<ActivityIndicator style={{flex:1,justifyContent:'center'}} size="large" color={Colors.redA100} animating={true}/>)}
+                            {isFetching  && (<ActivityIndicator style={styles.activityIndicator} size="large" color={Colors.redA100} animating={true}/>)}
+                            {!isFetching && items.length == 0 && (
+                                <Title >Veri YOK</Title>
+                            )}
                             <ProductList products = {items}/>
                         </SafeAreaView>
                     </Card.Content>
-                    <Button mode="contained"  onPress= {()=>this.logout()}>Çıkış</Button>
                 </Card>
                 
             </View>
         );
     }
 }
-/*
-<Button mode="contained" onPress= {()=>navigate("Adding")}>Ekle</Button>
-*/
-//<Button mode="contained" onPress= {()=>navigate("CategoryAdding")}>Kategori Ekle</Button>
-const mapStateToProps = (state)=>{
-    //console.log(state);
-    return {
-        items:state.cuzdan.allBoughts,
-        isEmpty : state.cuzdan.isEmpty,
-    }
-}
-const mapDispatchToProps = (dispatch)=>{
-    return {
-        listBoughts:()=>listBoughts(dispatch),
-        setCategories:()=>setCategories(dispatch),
-        logout :() => logout(),
-    }
-}
-export default connect(mapStateToProps,mapDispatchToProps)(Home)
+
+
 const styles = StyleSheet.create({
+    
+    container: {
+        flex: 1,
+        //backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        
+    },
+    activityIndicator:{
+        flex:1,
+        justifyContent:'center'
+    },
+    scrollAreaStyle:{
+        flex:1,
+        width:screen.width-50,
+    },
     addButton:{
         position:"absolute",
         top:10,
@@ -207,12 +234,29 @@ const styles = StyleSheet.create({
         color:Colors.deepPurpleA100,
 
     },  
-    container: {
-      flex: 1,
-      //backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-      
+    cardStlye:{
+        flex:1,
     },
-  });
+    
+});
+
+const mapStateToProps = (state)=>{
+    //console.log(state);
+    return {
+        items:state.cuzdan.allBoughts,
+        isFetching : state.cuzdan.isFetching,
+        startDate: state.cuzdan.startDate,
+        endDate: state.cuzdan.endDate,
+    }
+}
+const mapDispatchToProps = (dispatch)=>{
+    return {
+        listBoughts:(startDate,endDate)=>listBoughts(dispatch,startDate,endDate),
+        setCategories:()=>setCategories(dispatch),
+        setDates:(startDate,endDate) => dispatch(setDates(startDate,endDate)),
+        logout :() => logout(),
+    }
+}
+export default connect(mapStateToProps,mapDispatchToProps)(Home)
+
   

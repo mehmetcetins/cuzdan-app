@@ -3,6 +3,8 @@ import {
     ADD_BOUGHT,
     LIST_BOUGHT,
     SET_CATEGORIES,
+    SET_DATES,
+    LOADING
 } from "./actionTypes";
 import { LogBox } from 'react-native';
 import * as firebase from 'firebase';
@@ -32,22 +34,28 @@ export const setCategories = (dispatch)=>  {
 
     
 }
-export const listBoughts = (dispatch,startDate = -1,endDate = -1)=> {
-    if (startDate == endDate && startDate == -1){
-        startDate = new Date(Date.now());
-        endDate = new Date(startDate.getFullYear(),startDate.getMonth()+1,0).getTime();
-        startDate = new Date(startDate.getFullYear(),startDate.getMonth() ,1).getTime();
-    }
+export const listBoughts = (dispatch,startDate,endDate)=> {
     dispatch({
         type:LIST_BOUGHT,
         payload:{
             allBoughts:[],
-            isEmpty:true,
+            isFetching:true,
         }
     })
+    if (startDate == endDate && startDate == -1){
+        startDate = new Date(Date.now());
+        endDate = new Date(startDate.getFullYear(),startDate.getMonth()+1,0);
+        startDate = new Date(startDate.getFullYear(),startDate.getMonth() ,1);
+    }
+    else {
+        endDate = new Date(endDate.getFullYear(),endDate.getMonth(),endDate.getDate() +1)
+    }
+    
+    //console.log(startDate,endDate);
+    
     const database = firebase.database();
     
-    database.ref("boughts").child(firebase.auth().currentUser.uid).orderByChild('date').startAt(startDate).endAt(endDate).once('value',(snapshot) => {
+    database.ref("boughts").child(firebase.auth().currentUser.uid).orderByChild('date').startAt(startDate.getTime()).endAt(endDate.getTime()).once('value',(snapshot) => {
     let allBoughts = [];
     if(snapshot.exists()){
         
@@ -58,7 +66,7 @@ export const listBoughts = (dispatch,startDate = -1,endDate = -1)=> {
                 price : value.price,
                 categoryName: value.categoryName,
                 quantity: value.quantity,
-                date: new Date(value.date).toLocaleDateString("tr-TR"),
+                date: new Date(value.date).toLocaleDateString(),
             })
         
         }
@@ -69,7 +77,7 @@ export const listBoughts = (dispatch,startDate = -1,endDate = -1)=> {
             type : LIST_BOUGHT,
             payload:{
                 allBoughts:allBoughts.reverse(),
-                isEmpty:!(allBoughts.length > 0),
+                isFetching:false,
             }
         });
     });
@@ -79,8 +87,19 @@ export const listBoughts = (dispatch,startDate = -1,endDate = -1)=> {
     
 }
 
+export const setDates = (startDate,endDate)=>{
+    //console.log(startDate,endDate,"asdasdasğdkasğodkasdjkapjdp");
+    return {
+        type : SET_DATES,
+        payload : {
+            startDate : startDate,
+            endDate:endDate,
+        }
+    };
+}
+
 export const addBoughts = ({name,price,quantity,categoryName,date}) => {
-    console.log({name,price,quantity,categoryName,date});
+    //console.log({name,price,quantity,categoryName,date});
     let userBoughtRef = firebase.database().ref("boughts");
     userBoughtRef = userBoughtRef.child(firebase.auth().currentUser.uid);
     userBoughtRef.push({
@@ -98,9 +117,20 @@ export const addBoughts = ({name,price,quantity,categoryName,date}) => {
     }
 }
 
+export const deleteBought = (key) => {
+    firebase.database().ref("boughts").child(firebase.auth().currentUser.uid).child(key).remove();
+}
 
 export const logout = ()=> {
     firebase.auth().signOut();
-    
+}
+
+export const changeLoadingState = (loadingState)=> {
+    return {
+        type:LOADING,
+        payload:{
+            isLoading : loadingState,
+        }
+    }
 }
 

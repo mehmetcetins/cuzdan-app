@@ -1,4 +1,8 @@
 import React from "react";
+import {
+    IconButton,
+    Colors
+} from "react-native-paper";
 import {createStackNavigator} from "react-navigation-stack";
 
 import Home from "../screens/HomeScreen";
@@ -12,11 +16,17 @@ const getTabBarIcon = icon => ({ tintColor }) => (
 
 export default HomeScreens = createStackNavigator(
     {
-        Home,
+        Home:{
+            screen:Home,
+            navigationOptions:{
+                title : 'Ana Sayfa',
+                
+            }
+        },
         Adding: {
             screen : AddingScreen,
             navigationOptions:{
-                title: 'Yeni Ürün',
+                title: 'Yeni Harcama',
             }
         },
         /*CategoryAdding: {

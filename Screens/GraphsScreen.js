@@ -24,7 +24,7 @@ import PieIcons from "../components/PieIcons";
 import { connect } from 'react-redux';
 
 
-class TabTest extends React.Component{
+class GraphsScreen extends React.Component{
 
     state = {
         showModal:false,
@@ -43,7 +43,7 @@ class TabTest extends React.Component{
         categoires: [],
         mean:0,
     }
-    _isMounted = false;
+    
     setItems(results){
         data = [];
         for(let i = 0 ; i<results.length;i++){
@@ -54,8 +54,7 @@ class TabTest extends React.Component{
                 </View>
             );
         }
-        if(this._isMounted)
-            this.setState({items:data});
+        this.setState({items:data});
     }
 
     
@@ -89,8 +88,7 @@ class TabTest extends React.Component{
         }
         mean = mean / quantityFreqList.length;
         quantityFreqList = quantityFreqList.filter(x => x.amount >= mean);
-        if(this._isMounted)
-            this.setState({frequency:quantityFreqList,mean:mean});
+        this.setState({frequency:quantityFreqList,mean:mean});
     }
 
     percentGraph(entries){
@@ -136,8 +134,7 @@ class TabTest extends React.Component{
         }
         
         //console.log(percentList);
-        if(this._isMounted)
-            this.setState({percent:percentList})
+        this.setState({percent:percentList})
     }
 
     componentDidMount(){/*
@@ -147,15 +144,13 @@ class TabTest extends React.Component{
             this.frequencyGraph(entries);
             this.percentGraph(entries);
         });*/
-        this._isMounted = true;
+
         const entries = Object.entries(this.props.items)
         this.frequencyGraph(entries);
         this.percentGraph(entries);
     }
 
-    componentWillUnmount(){
-        this._isMounted=false;
-    }
+
     componentDidUpdate(prevProps){
         if(this.props.items != prevProps.items){
             const entries = Object.entries(this.props.items)
@@ -214,7 +209,7 @@ const mapStateToProps = (state)=>{
     }
 }
 
-export default connect(mapStateToProps)(TabTest)
+export default connect(mapStateToProps)(GraphsScreen)
 
 const styles = StyleSheet.create({
     cardContent:{

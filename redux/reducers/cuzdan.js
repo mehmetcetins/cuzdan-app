@@ -3,13 +3,17 @@ import {
   ADD_BOUGHT,
   SET_CATEGORIES,
   LIST_BOUGHT,
-
+  SET_DATES,
+  LOADING,
 } from "../actionTypes";
 const initialState = {
   categoryName : "Kategori Seçiniz",
   allBoughts: [],
   categories: [],
-  isEmpty:false,
+  isFetching:true,
+  isLoading:true,
+  startDate:-1,
+  endDate:-1,
 };
 
 export default function reducer(state = initialState, action) {
@@ -27,10 +31,11 @@ export default function reducer(state = initialState, action) {
       return null
     }
     case LIST_BOUGHT:{
+
       return {
         ...state,
         allBoughts:action.payload.allBoughts,
-        isEmpty:action.payload.isEmpty,
+        isFetching:action.payload.isFetching,
       }
     }
     case SET_CATEGORIES:{
@@ -41,7 +46,20 @@ export default function reducer(state = initialState, action) {
         categories:action.payload.categories,
       }
     }
-   
+    case SET_DATES:{
+      //console.log(action.payload)
+      return {
+        ...state,
+        startDate:action.payload.startDate,
+        endDate:action.payload.endDate,
+      }
+    }
+    case LOADING:{
+      return {
+        ...state,
+        isLoading:action.payload.isLoading,
+      }
+    }
     case "TEST" : {
       console.log("test,test")
       return {

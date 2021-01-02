@@ -13,8 +13,6 @@ import {
     Snackbar
 } from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
-
-import ProductList from "../components/productList";
 import { connect } from 'react-redux';
 import { addBoughts,listBoughts } from '../redux/actions';
 
@@ -30,88 +28,74 @@ class AddingScreen extends React.Component{
         date : Date.now(),
         showDatePicker:false,
         snackBarVisible:false,
+        snackBarFailure:false,
     };
 
-    _isMounted = false;
-    async addBought(inputRef){
-        const {name,price,quantity,date} = this.state;
-        const {categoryName} = this.props;
-        this.snackBarDissmiss({snackBarVisible:true});
-        this.props.addBoughts({name,price,quantity,categoryName,date});
-        this.props.listBoughts();
-        this.clearInputs();
-        this.focusNextInput(inputRef);
-        //this.boughtList();
-    }
-
-    boughtList(){
-       
-        const database = firebase.database();
-        database.ref("boughts").child(firebase.auth().currentUser.uid).on('value',(snapshot) => {
-            if(snapshot.exists()){
-                var allBoughts = [];
-                for (const [key,value] of Object.entries(snapshot.val())){
-                    allBoughts.push({
-                        key : key,
-                        name: value.name,
-                        price : value.price,
-                        quantity: value.quantity,
-                        date: new Date(value.date).toLocaleDateString("tr-TR"),
-                    })
-                    
-                }
-                if(this._isMounted)
-                    this.setState({items:allBoughts});
-                //console.log(allBoughts);
-            }
-        });
-        
-    }
-
-    clearInputs(){
-        if(this._isMounted){
-            this.setState({
-                name:'',
-                price:'',
-                quantity:'',
-            })
+    
+    addBought(inputRef){
+        if(this.checkInputs()){
+            const {name,price,quantity,date} = this.state;
+            const {categoryName,addBoughts,listBoughts,startDate,endDate} = this.props;
+            this.snackBarDissmiss({snackBarVisible:true});
+            addBoughts({name,price,quantity,categoryName,date});
+            listBoughts(startDate,endDate);
+            this.clearInputs();
+            this.focusNextInput(inputRef);
+        }
+        else{
+            this.setState({snackBarFailure:true});
         }
     }
 
+    checkInputs(){
+        const {name,price,quantity} = this.state;
+        const {categoryName} = this.props;
+        if (categoryName === "Kategori Seçiniz"){
+            return false;
+        }
+        else if (name === '' || price==='' || quantity===''){
+            return false;
+        }
+        return true;
+    }
+
+    clearInputs(){
+        
+        this.setState({
+            name:'',
+            price:'',
+            quantity:'',
+        })
+        
+    }
+
     nameChanged(newName){
-        if(this._isMounted)
-            this.setState({name:newName})
+        this.setState({name:newName})
     }
     priceChanged(newPrice){
-        if(this._isMounted)
-            this.setState({price:newPrice});
+        this.setState({price:newPrice});
     }
     quantityChanged(newQuantity){
-        if(this._isMounted)
-            this.setState({quantity:newQuantity});
+       this.setState({quantity:newQuantity});
     }
     dateChanged(newDate){
         this.setState(newDate)
     }
     toggleDatePickerModal(){
-        if(this._isMounted)
-            this.setState({showDatePicker:!this.state.showDatePicker})
+        this.setState({showDatePicker:!this.state.showDatePicker})
     }
     snackBarDissmiss(visible){
-        if(this._isMounted)
-            this.setState(visible);
+        this.setState(visible);
     }
     componentDidMount(){
         //console.log(FirebaseCore.DEFAULT_APP_OPTIONS);
         //this.boughtList();
-        this._isMounted= true;
-        this.props.listBoughts();
+        const {startDate,endDate,listBoughts} = this.props;
+
+        listBoughts(startDate,endDate);
        
     }
-    componentWillUnmount(){
-        //this.unsubscribe();
-        this._isMounted = false;
-    }
+
 
     focusNextInput(inputRef){
         inputRef.current.focus();
@@ -121,6 +105,7 @@ class AddingScreen extends React.Component{
             date,
             showDatePicker,
             snackBarVisible,
+            snackBarFailure,
             name,
             price,
             quantity
@@ -131,22 +116,34 @@ class AddingScreen extends React.Component{
         const quantityInput = React.createRef();
         return (
             <View style={styles.container}>
-                    <Snackbar
-                        visible={snackBarVisible}
-                        style= {{backgroundColor:Colors.green400}}
-                        onDismiss = {()=> {
-                          this.snackBarDissmiss({snackBarVisible:false});  
-                        }}
-                        duration = {100}
-                        >
-                        Eklendi
-                    </Snackbar>
+                <Snackbar
+                    visible={snackBarVisible}
+                    style= {styles.snackBarSuccess}
+                    wrapperStyle={styles.snackBarStyle}
+                    onDismiss = {()=> {
+                        this.snackBarDissmiss({snackBarVisible:false});  
+                    }}
+                    duration = {100}
+                    >
+                    Eklendi
+                </Snackbar>
+                <Snackbar
+                    visible={snackBarFailure}
+                    style= {styles.snackBarFailure}
+                    wrapperStyle={styles.snackBarStyle}
+                    onDismiss = {()=> {
+                        this.snackBarDissmiss({snackBarFailure:false});  
+                    }}
+                    duration = {500}
+                    >
+                    Alanları Kontrol Et
+                </Snackbar>
                 <View >
                
                     <TextInput
                         autoFocus={true}
                         ref={nameInput}
-                        label="Ürün Adı"
+                        label="Harcama Adı"
                         value={name}
                         onChangeText={(name) => this.nameChanged(name)}
                         blurOnSubmit={false}
@@ -162,12 +159,12 @@ class AddingScreen extends React.Component{
                         onSubmitEditing={()=>this.focusNextInput(quantityInput)}
                     ></TextInput>
                     <TextInput 
-                    ref={quantityInput}  
-                    label = "Adet/Kilo" 
-                    value={quantity}
-                    keyboardType="number-pad"
-                    blurOnSubmit={false}
-                    onChangeText={(quantity) => this.quantityChanged(quantity)} 
+                        ref={quantityInput}  
+                        label = "Adet/Kilo" 
+                        value={quantity}
+                        keyboardType="number-pad"
+                        blurOnSubmit={false}
+                        onChangeText={(quantity) => this.quantityChanged(quantity)} 
                     ></TextInput>
                     <Button style={styles.categoryButton} mode="outlined" onPress={()=> this.toggleDatePickerModal()}>
                         {new Date(date).toLocaleDateString("tr-TR")}
@@ -190,25 +187,25 @@ class AddingScreen extends React.Component{
                     
                 </View>
                 <Button mode="contained" onPress={()=> this.addBought(nameInput)}>EKLE</Button>
-                <SafeAreaView style={{flex:1,}}>
-                    <ProductList products={items}/>
-                </SafeAreaView>
+                
             </View>
         );
     }
 }
-/*
-*/
+
+
+
 const mapStateToProps = (state)=>{
     //console.log(state);
     return {
         categoryName: state.cuzdan.categoryName,
-        items:state.cuzdan.allBoughts,
+        startDate: state.cuzdan.startDate,
+        endDate: state.cuzdan.endDate,
     }
 }
 const mapDispatchToProps = (dispatch)=>{
     return {
-        listBoughts:()=>listBoughts(dispatch),
+        listBoughts:(startDate,endDate)=>listBoughts(dispatch,startDate,endDate),
         addBoughts:(parameters)=>addBoughts(parameters),
     }
 }
@@ -224,24 +221,22 @@ const styles = StyleSheet.create({
     categoryButton:{
         borderWidth:1,
         borderColor:Colors.deepPurple900,
-        //paddingVertical:15,
         marginVertical:5,
-    }, 
-    addingInputs:{
-        borderWidth:1,
-        borderColor:"grey",
-        marginBottom:10,
-        padding:10,
     },
-    TouchableButton:{
-        borderColor:'blue',
-        borderWidth:2,
-        padding:20,
-        marginVertical:10,
-        flex:1,
-        alignItems:'center',
-        justifyContent:'center',
+    snackBarStyle:{
+        position:"absolute",
+        top:0,
+        
+        
+    },
+    snackBarSuccess:{
+        backgroundColor:Colors.green400,
+    },
+    snackBarFailure:{
+        backgroundColor:Colors.red900,
     }
+
+
 
 
 });

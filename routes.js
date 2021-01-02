@@ -8,15 +8,16 @@ import {
 
 
 
-import LoginScreen from "./screens/LoginScreen";
+import LoginNavigator from "./navigators/LoginNavigator";
 
-import TestDrawer from "./navigators/TestDrawer";
+import DrawerNavigator from "./navigators/DrawerNavigator";
 
-const testSwitch = createSwitchNavigator(
+const SwitchNavigator = createSwitchNavigator(
     {
         
-        Login:LoginScreen,
-        Tab:TestDrawer,
+        Login:LoginNavigator,
+        
+        Drawer:DrawerNavigator,
     },
     {
         initialRouteName:'Login'
@@ -25,4 +26,4 @@ const testSwitch = createSwitchNavigator(
 );
 
 
-export default createAppContainer(testSwitch);
+export default createAppContainer(SwitchNavigator);
