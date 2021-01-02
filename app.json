@@ -11,6 +11,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "notification":{
+        "icon":"./assets/notificon.png"
+    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -23,10 +26,11 @@
       "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
+      "useNextNotificationsApi": true,
       "package":"com.nobit.cuzdan",
       "googleServicesFile":"./google-services.json",
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
       }
     },

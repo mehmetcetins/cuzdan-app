@@ -67,7 +67,6 @@ class LoginScreen extends React.Component{
             
         }
         
-        
         //firebase.analytics();
         
         

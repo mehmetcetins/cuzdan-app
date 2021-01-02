@@ -23,6 +23,7 @@ import {SLR} from "ml-regression";
 import ProductList from "../components/productList";
 import { connect } from 'react-redux';
 import {setCategories,listBoughts,logout,setDates} from "../redux/actions";
+import {schedulePushNotification,registerForPushNotificationsAsync, cancelNotification,} from "../utils/notificationApi";
 
 const screen = Dimensions.get("screen");
 const window = Dimensions.get("window");
@@ -35,6 +36,7 @@ class Home extends React.Component{
         slr: [],
         predictedTotalExpense:0,
         showLoginModal:false,
+        notifId:null,
     };
 
     
@@ -69,10 +71,27 @@ class Home extends React.Component{
         setCategories();
         setDates(-1,-1);
         listBoughts(-1,-1);
+        
     }
-    componentDidUpdate(prevProps){
-        if(this.props.items != prevProps.items){
-            this.cumulativeGraph(this.props.items);
+    async notifTest(totalExpense){
+        const token = await registerForPushNotificationsAsync();
+        
+        const identifier= await schedulePushNotification(totalExpense);
+        this.setState({notifId:identifier})
+    }
+    componentDidUpdate(prevProps,prevState){
+        const {predictedTotalExpense} = this.state;
+        const {items} = this.props; 
+        if(items != prevProps.items){
+            this.cumulativeGraph(items);
+        }
+        if(predictedTotalExpense != prevState.predictedTotalExpense){
+            cancelNotification(prevProps.notifId);
+            if(predictedTotalExpense ){
+                if(predictedTotalExpense.price > 0)
+                    this.notifTest(predictedTotalExpense.price);
+            }
+            
         }
         
     }
