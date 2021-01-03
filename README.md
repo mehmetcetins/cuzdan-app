@@ -1,7 +1,7 @@
 # Cuzdan Uygulaması
 
 ## Proje Hiyerarşisi
-<img src="./images/hiyerarşi.jpeg?raw=true" width="300">
+<img src="./images/hiyerarşi.png?raw=true" width="300">
 
 
 
