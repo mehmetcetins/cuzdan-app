@@ -1,7 +1,8 @@
 # Cuzdan Uygulaması
 
 ## Proje Hiyerarşisi
-![Hiyerarşi](https://github.com/mehmetcetins/cuzdan-app/tree/master/images/hiyerarşi.png?raw=true)
+<img src="./images/hiyerarşi.jpeg?raw=true" width="300">
+
 
 
 Uygulama app.js den başlayarak çalışmakta.  AppContainer, PaperProvider ve ReduxProvider ile sarmalanıyor. AppContainer 'ımı SwitchNavigator 'üm oluşturuyor.
@@ -19,11 +20,7 @@ klasöründe her bir navigation sayfası için gerekli ekranım var.
 * Web servis çağrılmaldır. **(Firebase)** :heavy_check_mark:
 
 ## Ekranlar
-![Giriş](https://github.com/mehmetcetins/cuzdan-app/tree/master/images/Giriş.jpeg?raw=true)
-![Kayıt Ol](https://github.com/mehmetcetins/cuzdan-app/tree/master/images/kayıt-ol.jpeg?raw=true)
-![Ana Ekran](https://github.com/mehmetcetins/cuzdan-app/tree/master/images/ana-ekran.jpeg?raw=true)
-![Grafikler](https://github.com/mehmetcetins/cuzdan-app/tree/master/images/grafikler.jpeg?raw=true)
-![Ekleme](https://github.com/mehmetcetins/cuzdan-app/tree/master/images/ekleme.jpeg?raw=true)
-![kategori seçim](https://github.com/mehmetcetins/cuzdan-app/tree/master/images/kategori-seçim.jpeg?raw=true)
-![Drawer Menu](https://github.com/mehmetcetins/cuzdan-app/tree/master/images/drawer-menu.jpeg?raw=true)
-![Kayıtlar](https://github.com/mehmetcetins/cuzdan-app/tree/master/images/kayıtlar.jpeg?raw=true)
+<img src="./images/Giriş.jpeg?raw=true" width="300"><img src="./images/kayıt-ol.jpeg?raw=true" width="300"><img src="./images/ana-ekran.jpeg?raw=true" width="300">
+<img src="./images/ekleme.jpeg?raw=true" width="300"><img src="./images/kategori-seçim.jpeg?raw=true" width="300"><img src="./images/drawer-menu.jpeg?raw=true" width="300">
+<img src="./images/kayıtlar.jpeg?raw=true" width="300">
+
