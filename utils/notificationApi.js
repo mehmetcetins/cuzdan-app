@@ -21,7 +21,7 @@ export async function schedulePushNotification(totalExpense) {
       trigger: { seconds: 30},
     });
     return identifier;
-  }
+}
 
 export async function cancelNotification(identifier){
     await Notifications.cancelScheduledNotificationAsync(identifier);

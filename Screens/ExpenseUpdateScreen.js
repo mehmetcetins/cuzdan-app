@@ -47,7 +47,6 @@ class ExpenseUpdateScreen extends React.Component{
         return (
             <DataTable.Row>
                 <DataTable.Cell style={styles.dataTableItems}>{item.name}</DataTable.Cell>
-                
                 <DataTable.Cell style={styles.dataTableItems}><Text>{item.price}</Text></DataTable.Cell>
                 <DataTable.Cell style={styles.dataTableItems}>{item.quantity}</DataTable.Cell>
                 <DataTable.Cell  style={styles.dataTableItems}>{item.date}</DataTable.Cell>

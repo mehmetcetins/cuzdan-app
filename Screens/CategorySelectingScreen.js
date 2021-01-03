@@ -33,9 +33,9 @@ class CategorySelectingScreen extends React.Component{
             <List.Section>
 
                 <FlatList 
-                data={this.props.categories}
-                renderItem={({item,index}) => this.categoryItems(item,index)}
-                keyExtractor={(item, index) => index.toString()}
+                    data={this.props.categories}
+                    renderItem={({item,index}) => this.categoryItems(item,index)}
+                    keyExtractor={(item, index) => index.toString()}
 
                 />
 

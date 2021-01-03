@@ -7,14 +7,6 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export default class PieIcons extends React.Component {
 
     render() {
-        const labels={
-            "Yiyecek & İçecek":"hamburger",
-            "Alışveriş":"shopping-cart",
-            "Ulaşım":"bus",
-            "Yaşam & Eğlence":"smile",
-            "Elektronik":"plug",
-        }
-       
         const {x, y, datum} = this.props;
         const Icon = datum.icon
         

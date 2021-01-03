@@ -6,6 +6,7 @@ import {
   SET_DATES,
   LOADING,
 } from "../actionTypes";
+
 const initialState = {
   categoryName : "Kategori Seçiniz",
   allBoughts: [],
@@ -74,10 +75,5 @@ export default function reducer(state = initialState, action) {
 }
 
 
-
-
-const setCategories = (allCategories)=> {
-  tempCategories = allCategories
-}
 
 
