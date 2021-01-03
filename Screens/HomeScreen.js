@@ -18,19 +18,17 @@ import {
     VictoryChart,
     VictoryLine
 } from "victory-native";
-import '@tensorflow/tfjs-react-native';
 import {SLR} from "ml-regression";
 import ProductList from "../components/productList";
 import { connect } from 'react-redux';
-import {setCategories,listBoughts,logout,setDates} from "../redux/actions";
-import {schedulePushNotification,registerForPushNotificationsAsync, cancelNotification,} from "../utils/notificationApi";
+import {setCategories,listBoughts,setDates} from "../redux/actions";
+import {schedulePushNotification, cancelNotification,} from "../utils/notificationApi";
 
 const screen = Dimensions.get("screen");
 const window = Dimensions.get("window");
 class Home extends React.Component{
     
     state={
-        isTfReady: false,
         modelPredictions: [],
         graphsData: [],
         slr: [],

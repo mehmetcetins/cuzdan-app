@@ -89,11 +89,7 @@ class AddingScreen extends React.Component{
     }
     componentDidMount(){
         //console.log(FirebaseCore.DEFAULT_APP_OPTIONS);
-        //this.boughtList();
-        const {startDate,endDate,listBoughts} = this.props;
-
-        listBoughts(startDate,endDate);
-       
+        //this.boughtList();       
     }
 
 

@@ -16,9 +16,9 @@ import {
     VictoryPie,
     VictoryTheme
 } from "victory-native";
-import { StatusBar } from 'expo-status-bar';
+
 import { ScrollView } from "react-native-gesture-handler";
-import { data } from "@tensorflow/tfjs";
+
 import PieIcons from "../components/PieIcons";
 
 import { connect } from 'react-redux';
