@@ -1,11 +1,14 @@
 # Cuzdan Uygulaması
+  İnsanlar günlük hayatlarında harcamalar yapar bu harcamalardan bazıları çok küçüktür ve kendisini farkettirmez. Bu harcamalar zamanla o kadar büyür ki ay sonunda
+ne zaman harcadım bu kadar parayı dersiniz ve aklınıza o küçük harcamalar gelmez. Bu uygulama ile cebinizi delen harcamaları farketmeyi hedefledim ve kullanıcıya
+erkenden önlem alması için lineer regresyon ile harcamalarının nereye gittiği gösterdim.
 
 ## Proje Hiyerarşisi
 <img src="./images/hiyerarşi.png?raw=true" width="300">
 
 
 
-Uygulama app.js den başlayarak çalışmakta.  AppContainer, PaperProvider ve ReduxProvider ile sarmalanıyor. AppContainer 'ımı SwitchNavigator 'üm oluşturuyor.
+  Uygulama app.js den başlayarak çalışmakta.  AppContainer, PaperProvider ve ReduxProvider ile sarmalanıyor. AppContainer 'ımı SwitchNavigator 'üm oluşturuyor.
 Navigator'lerim navigators klasörünün içinde toplandı. Navigator'larım Stack, Drawer ve Tab 'dan oluşmakta. Utils klaösründe hata mesajlarımı türkçeleştirmekte
 kullandığım araçtan ve notificationApi'ını yönetmek için kullandığım araçlardan oluşuyor. Components klaösründe kendi oluşturduğum component'lerim var. Screens
 klasöründe her bir navigation sayfası için gerekli ekranım var.
