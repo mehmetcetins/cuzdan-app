@@ -79,7 +79,6 @@ class GraphsScreen extends React.Component{
                 for(const [searchKey,searchValue] of entries){
                     if(searchKey !== key && searchValue.name === productName){
                         quantitySum += parseFloat(searchValue.quantity);
-                       
                     }
                 }
                 mean+=quantitySum;

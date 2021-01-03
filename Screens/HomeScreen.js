@@ -86,7 +86,7 @@ class Home extends React.Component{
         }
         if(predictedTotalExpense != prevState.predictedTotalExpense){
             
-            cancelNotification(prevState.notifId);
+            
             if(predictedTotalExpense ){
                 if (startDate == endDate && startDate == -1){
                    dateCheck = true;
@@ -102,8 +102,10 @@ class Home extends React.Component{
                 }
                
                 //console.log("expectedstart: "+expectedStartDate + " expectedend: "+ expectedEndDate + " start: "+startDate + " end: "+endDate)
-                if(predictedTotalExpense.price > 0 && dateCheck)
+                if(predictedTotalExpense.price > 0 && dateCheck){
+                    cancelNotification(prevState.notifId);
                     this.setNotification(parseFloat(predictedTotalExpense.price).toFixed(2).replace("00",""));
+                }
             }
             
         }
@@ -300,7 +302,7 @@ const mapDispatchToProps = (dispatch)=>{
         listBoughts:(startDate,endDate)=>listBoughts(dispatch,startDate,endDate),
         setCategories:()=>setCategories(dispatch),
         setDates:(startDate,endDate) => dispatch(setDates(startDate,endDate)),
-        logout :() => logout(),
+        //logout :() => logout(),
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(Home)

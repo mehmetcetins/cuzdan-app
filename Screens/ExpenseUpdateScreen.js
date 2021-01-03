@@ -81,16 +81,6 @@ class ExpenseUpdateScreen extends React.Component{
                         />
                     )}
                 </DataTable>
-                 <Portal>
-                    <Modal visible={showModal} onDismiss={()=> this.displayModal({showModal:false})} contentContainerStyle={containerStyle}>
-                        <TextInput label="Harcama Adı"></TextInput>
-                        <TextInput label="Toplam fiyat"></TextInput>
-                        <TextInput label="Adet/Kilo"></TextInput>
-                        <Button></Button>
-                        <Button></Button>
-                        <Button></Button>
-                    </Modal>
-                </Portal>
             </SafeAreaView>
         )
     }

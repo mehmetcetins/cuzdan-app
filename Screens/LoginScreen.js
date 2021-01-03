@@ -144,7 +144,6 @@ class LoginScreen extends React.Component{
                             
                             //placeholder="Password" 
                             onChangeText={(text)=>{
-                                
                                 this.setState({password:text})}
                             }
                         ></TextInput>

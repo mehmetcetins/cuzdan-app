@@ -121,7 +121,7 @@ class DrawerMenuScreen extends React.Component{
                                     startDate:selectedDate,
                                     showDatePicker:false,
                                     maximumDate: new Date(selectedDate.getFullYear(),selectedDate.getMonth(),selectedDate.getDate()+30),
-                                    showEndDatePicker:true,
+                                    showEndDatePicker:true
                                 });
                             }
                             else{
