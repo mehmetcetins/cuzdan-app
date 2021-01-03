@@ -73,23 +73,37 @@ class Home extends React.Component{
         listBoughts(-1,-1);
         
     }
-    async notifTest(totalExpense){
-        const token = await registerForPushNotificationsAsync();
-        
-        const identifier= await schedulePushNotification(totalExpense);
+    async setNotification(totalExpense){
+        const identifier = await schedulePushNotification(totalExpense);
         this.setState({notifId:identifier})
     }
     componentDidUpdate(prevProps,prevState){
         const {predictedTotalExpense} = this.state;
-        const {items} = this.props; 
+        const {items,startDate,endDate} = this.props; 
+        let dateCheck = false;
         if(items != prevProps.items){
             this.cumulativeGraph(items);
         }
         if(predictedTotalExpense != prevState.predictedTotalExpense){
-            cancelNotification(prevProps.notifId);
+            
+            cancelNotification(prevState.notifId);
             if(predictedTotalExpense ){
-                if(predictedTotalExpense.price > 0)
-                    this.notifTest(predictedTotalExpense.price);
+                if (startDate == endDate && startDate == -1){
+                   dateCheck = true;
+                }
+                else{
+                    let expectedStartDate = new Date(Date.now());
+                    let expectedEndDate = new Date(expectedStartDate.getFullYear(),expectedStartDate.getMonth()+1,0);
+                    expectedStartDate = new Date(expectedStartDate.getFullYear(),expectedStartDate.getMonth(),1);
+                    if(expectedStartDate.getTime() === startDate.getTime() && expectedEndDate.getTime() === endDate.getTime()){
+                        
+                        dateCheck=true;
+                    }
+                }
+               
+                //console.log("expectedstart: "+expectedStartDate + " expectedend: "+ expectedEndDate + " start: "+startDate + " end: "+endDate)
+                if(predictedTotalExpense.price > 0 && dateCheck)
+                    this.setNotification(parseFloat(predictedTotalExpense.price).toFixed(2).replace("00",""));
             }
             
         }
@@ -189,7 +203,7 @@ class Home extends React.Component{
                 
                 
                 <Card style={styles.cardStlye} elevation={6}>
-                    <Card.Content style={{top:-50}} >
+                    <Card.Content style={styles.chartCardStyle} >
                         <VictoryChart width={window.width-50} height={window.height/2.5} domain={{x:[0, 31 ]}}  >
                             <VictoryLine data = {graphsData} x = "d" y = "price" animate={{duration:200,}}></VictoryLine>
                             <VictoryLine style={{data: { stroke: "#c43a31" },}} data = {slr} x="d" y = "price" animate={{duration:200,}}></VictoryLine>
@@ -208,14 +222,16 @@ class Home extends React.Component{
                             size={46}
                             onPress= {()=>navigate("Adding")}
                         />
-                    <Card.Content style={{flex:1,}}>
+                    <Card.Content style={styles.listCardStyle}>
                         
                         <SafeAreaView style={styles.scrollAreaStyle}>
                         
                             
                             {isFetching  && (<ActivityIndicator style={styles.activityIndicator} size="large" color={Colors.redA100} animating={true}/>)}
                             {!isFetching && items.length == 0 && (
-                                <Title >Veri YOK</Title>
+                                <View style={styles.noDataTitle}>
+                                    <Title >Veri YOK</Title>
+                                </View>
                             )}
                             <ProductList products = {items}/>
                         </SafeAreaView>
@@ -256,6 +272,17 @@ const styles = StyleSheet.create({
     cardStlye:{
         flex:1,
     },
+    chartCardStyle:{
+        top:-50
+    },
+    listCardStyle:{
+        flex:1,
+    },
+    noDataTitle:{
+        flex:1,
+        justifyContent:"center",
+        alignItems:"center",
+    }
     
 });
 

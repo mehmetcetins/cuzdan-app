@@ -6,7 +6,7 @@ import {
     Text,
     TouchableOpacity,
     Dimensions,
-    
+    Keyboard
 } from "react-native";
 import {
     Button,
@@ -107,6 +107,7 @@ class LoginScreen extends React.Component{
         );
     }
     signUp(){
+        Keyboard.dismiss();
         this.props.navigation.navigate("Signup");
         
     }
@@ -140,6 +141,7 @@ class LoginScreen extends React.Component{
                             secureTextEntry={true} 
                             label="Şifre"
                             style = {styles.inputs}
+                            
                             //placeholder="Password" 
                             onChangeText={(text)=>{
                                 

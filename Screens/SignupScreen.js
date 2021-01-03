@@ -4,6 +4,7 @@ import {
     Text,
     StyleSheet,
     Dimensions,
+    
 } from "react-native";
 import {
     TextInput,
@@ -24,8 +25,7 @@ class SignupScreen extends React.Component{
         password:"",
         passwordCheck:"",
     }
-
-    
+   
     startLoading(){
         this.props.changeLoadingState(true);
     }
@@ -73,9 +73,11 @@ class SignupScreen extends React.Component{
             }
         )
     }
+
     render(){
         const {error} = this.state;
         const {isLoading} = this.props;
+        
         const passwordInput = React.createRef();
         const passwordCheckInput = React.createRef();
         return (
@@ -88,6 +90,7 @@ class SignupScreen extends React.Component{
                     {!isLoading && (
                     <View>
                         <TextInput 
+                            
                             label="E-Posta"
                             autoFocus={true}
                             keyboardType="email-address"

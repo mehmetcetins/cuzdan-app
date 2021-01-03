@@ -29,12 +29,6 @@ export default HomeScreens = createStackNavigator(
                 title: 'Yeni Harcama',
             }
         },
-        /*CategoryAdding: {
-            screen : CategoryAddingScreen,
-            navigationOptions:{
-                title: 'Yeni Kategori',
-            }
-        },*/
         CategorySelecting:{
             screen:CategorySelectingScreen,
             navigationOptions:{
